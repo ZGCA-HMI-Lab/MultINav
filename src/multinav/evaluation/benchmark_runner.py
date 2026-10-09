@@ -35,7 +35,7 @@ os.environ.setdefault("PYOPENGL_PLATFORM", "egl")
 import mujoco
 import numpy as np
 
-from molmo_spaces.evaluation.benchmark_schema import EpisodeSpec
+from multinav.core.episode import load_episode_spec
 from molmo_spaces.tasks.json_eval_task_sampler import JsonEvalTaskSampler
 
 from multinav.sim import container_scene_probe as probe
@@ -3856,7 +3856,7 @@ def evaluate_episode(
         )
         interactive_nav_v3.validate_interactive_nav_v3_episode(episode, expected_domains=list(nav["interaction_domains"]))
         phase_timings.record("episode_validation", phase_started)
-        spec = EpisodeSpec.model_validate(episode)
+        spec = load_episode_spec(episode)
         effective_max_steps, step_budget_basis = episode_step_budget(config, episode)
         print(
             "[episode-step-budget] "

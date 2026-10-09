@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from molmo_spaces.evaluation.benchmark_schema import EpisodeSpec
+from multinav.core.episode import load_episode_spec
 
 
 SCHEMA_PATH = (
@@ -839,7 +839,7 @@ def _serialize_and_validate_v3(episode: dict[str, Any]) -> dict[str, Any]:
     cleaned_episode.setdefault("interactive_nav", {}).setdefault(
         "generation_validation", {}
     )["minimal_plan_verified"] = minimal_value
-    validated_spec = EpisodeSpec.model_validate(cleaned_episode)
+    validated_spec = load_episode_spec(cleaned_episode)
     validated = json.loads(validated_spec.model_dump_json(exclude_none=True))
     validated["interactive_nav"]["generation_validation"][
         "minimal_plan_verified"

@@ -22,7 +22,6 @@ from scipy.spatial.transform import Slerp
 from scipy.spatial.transform import Rotation as R
 
 from molmo_spaces.env.data_views import Door, MlSpacesArticulationObject, MlSpacesFreeJointBody
-from molmo_spaces.evaluation.benchmark_schema import EpisodeSpec
 from molmo_spaces.molmo_spaces_constants import get_resource_manager
 from molmo_spaces.tasks.json_eval_task_sampler import JsonEvalTaskSampler
 from molmo_spaces.tasks.task import BaseMujocoTask
@@ -33,6 +32,12 @@ from molmo_spaces.utils.mj_model_and_data_utils import body_aabb
 from molmo_spaces.utils.pose import pose_mat_to_7d, pos_quat_to_pose_mat
 from molmo_spaces.utils.rendering_utils import get_geom_seg_mask
 from molmo_spaces.utils.scene_metadata_utils import get_scene_metadata
+from multinav.core.episode import load_episode_spec
+from multinav.core.joints import (
+    joint_closed_open_values,
+    joint_value_by_name as joint_value_by_name_in_model,
+    semantic_open_fraction,
+)
 
 if TYPE_CHECKING:
     from molmo_spaces.configs.base_nav_to_obj_config import NavToObjBaseConfig
@@ -880,16 +885,6 @@ def to_jsonable(value: Any) -> Any:
     return value
 
 
-def joint_closed_open_values(joint_range: list[float]) -> tuple[float, float]:
-    """Map an articulation range to semantic closed/open endpoints."""
-    values = [float(value) for value in joint_range]
-    if not values:
-        raise ValueError("Joint range is empty")
-    closed = min(values, key=lambda value: abs(value))
-    open_value = max(values, key=lambda value: abs(value - closed))
-    return float(closed), float(open_value)
-
-
 def collect_scene_records(ctx: LoadedContext) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     env = ctx.env
     om = env.object_managers[env.current_batch_index]
@@ -1022,11 +1017,8 @@ def joint_name_for_record(env, rec: dict[str, Any], joint_index: int) -> str:
 
 
 def joint_value_by_name(env, joint_name: str) -> float:
-    joint_id = mujoco.mj_name2id(env.current_model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
-    if joint_id < 0:
-        raise ValueError(f"Joint not found: {joint_name}")
-    qpos_addr = int(env.current_model.jnt_qposadr[joint_id])
-    return float(env.current_data.qpos[qpos_addr])
+    """Read one joint value from a loaded MolmoSpaces environment."""
+    return joint_value_by_name_in_model(env.current_model, env.current_data, joint_name)
 
 
 def snapshot_robot_state(env) -> dict[str, Any]:
@@ -3971,14 +3963,6 @@ def _read_interaction_joint_range(
     return [float(values[0]), float(values[1])]
 
 
-def semantic_open_fraction(value: float, closed_value: float, open_value: float) -> float:
-    """Normalize a joint value using its semantic closed/open endpoints."""
-    span = float(open_value) - float(closed_value)
-    if abs(span) <= 1e-8:
-        return 0.0
-    return float(np.clip((float(value) - float(closed_value)) / span, 0.0, 1.0))
-
-
 def stable_rby1_container_policy_cls(
     arm_preference: str = "auto",
     max_steps_per_waypoint: int = 30,
@@ -5478,7 +5462,7 @@ def _build_rby1_container_episode(
 ) -> EpisodeSpec:
     start_value = joint["closed_value"] if args.action == "open" else joint["open_value"]
     goal_value = joint["open_value"] if args.action == "open" else joint["closed_value"]
-    return EpisodeSpec.model_validate(
+    return load_episode_spec(
         {
             "house_index": args.house_ind,
             "scene_dataset": args.scene_dataset,
@@ -5519,7 +5503,7 @@ def _build_rby1_door_episode(
 ) -> EpisodeSpec:
     if args.action != "open":
         raise ValueError("The official RBY1 door planner currently supports opening, not closing.")
-    return EpisodeSpec.model_validate(
+    return load_episode_spec(
         {
             "house_index": args.house_ind,
             "scene_dataset": args.scene_dataset,
@@ -6252,7 +6236,7 @@ def build_added_episode_spec(
             "referral_expressions_priority": {},
         },
     }
-    return EpisodeSpec.model_validate(episode)
+    return load_episode_spec(episode)
 
 
 def build_added_object_output_dir(args: argparse.Namespace) -> Path:

@@ -7,10 +7,14 @@ from dataclasses import asdict, dataclass
 import math
 from typing import Any
 
-import mujoco
 import numpy as np
 
-from multinav.sim import container_scene_probe as probe
+from multinav.core.joints import (
+    joint_closed_open_values,
+    joint_range_by_name,
+    joint_value_by_name,
+    semantic_open_fraction,
+)
 
 
 SUCCESS_OPEN_FRACTION = 0.8
@@ -85,13 +89,11 @@ def joint_open_fraction(env: Any, interaction: dict[str, Any]) -> float:
     """Read a joint in the benchmark's semantic closed-to-open direction."""
 
     joint_name = str(interaction["joint_name"])
-    joint_id = mujoco.mj_name2id(env.current_model, mujoco.mjtObj.mjOBJ_JOINT, joint_name)
-    if joint_id < 0:
-        raise ValueError(f"Interaction joint not found: {joint_name}")
-    value = probe.joint_value_by_name(env, joint_name)
-    lower, upper = [float(item) for item in env.current_model.jnt_range[joint_id]]
-    closed, opened = probe.joint_closed_open_values([lower, upper])
-    return float(np.clip(probe.semantic_open_fraction(value, closed, opened), 0.0, 1.0))
+    value = joint_value_by_name(env.current_model, env.current_data, joint_name)
+    closed, opened = joint_closed_open_values(
+        list(joint_range_by_name(env.current_model, joint_name))
+    )
+    return semantic_open_fraction(value, closed, opened)
 
 
 def target_candidate_names(episode: dict[str, Any]) -> list[str]:
