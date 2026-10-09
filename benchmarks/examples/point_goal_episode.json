@@ -1,0 +1,172 @@
+{
+  "house_index": 19,
+  "scene_dataset": "procthor-10k",
+  "data_split": "val",
+  "seed": 13,
+  "robot": {
+    "robot_name": "rby1",
+    "init_qpos": {}
+  },
+  "img_resolution": [640, 480],
+  "cameras": [
+    {
+      "name": "head_camera",
+      "type": "robot_mounted",
+      "reference_body_names": ["base"],
+      "camera_offset": [0.0, 0.0, 0.0],
+      "lookat_offset": [1.0, 0.0, 0.0],
+      "camera_quaternion": [1.0, 0.0, 0.0, 0.0],
+      "fov": 60.0,
+      "record_depth": false
+    }
+  ],
+  "scene_modifications": {
+    "added_objects": {},
+    "object_poses": {},
+    "removed_objects": [],
+    "articulation_states": []
+  },
+  "task": {
+    "task_cls": "molmo_spaces.tasks.point_nav_task.PointNavTask",
+    "task_type": "nav_to_point",
+    "robot_base_pose": [1.2, -0.4, 0.0, 1.0, 0.0, 0.0, 0.0],
+    "goal_point": [3.5, 1.5, 0.0],
+    "succ_pos_threshold": 0.25,
+    "require_goal_yaw": false
+  },
+  "task_relevant_objects": [],
+  "language": {
+    "task_description": "Navigate to the designated point.",
+    "instruction_type": "point_goal",
+    "locale": "en",
+    "interaction_disclosure": "hidden",
+    "referral_expressions": {},
+    "referral_expressions_priority": {},
+    "task_input_mode": "goal_spec",
+    "grounded_entity_ids": [],
+    "grounded_plan_step_indices": [],
+    "generation_mode": "point_goal_generator_v1"
+  },
+  "interactive_nav": {
+    "schema_version": "interactive_nav_v3",
+    "case_id": "channel_house19_mug1_no_interaction__point_goal_reachable",
+    "parent_benchmark_episode_index": 0,
+    "interaction_domains": ["channel"],
+    "interaction_requirement": "unnecessary",
+    "target": {
+      "target_type": "point",
+      "goal_point": [3.5, 1.5, 0.0],
+      "sampling_source": "example_robot_inflated_occupancy",
+      "clearance_m": 0.3,
+      "grounding": {
+        "unique": true,
+        "matching_instance_count": 1,
+        "description": "fixed world-frame navigation point",
+        "attributes": {}
+      }
+    },
+    "success_criteria": {
+      "type": "nav_to_point",
+      "distance": {
+        "metric": "planar_robot_base_to_point",
+        "threshold_m": 0.25,
+        "comparison": "less_or_equal"
+      },
+      "require_goal_yaw": false
+    },
+    "initial_state": {
+      "interaction_states": [],
+      "task_success_without_interaction": false
+    },
+    "interactions": [],
+    "oracle_plan": {
+      "plan_id": "oracle_0",
+      "required_interaction_ids": [],
+      "steps": [
+        {
+          "type": "navigate",
+          "goal_point": [3.5, 1.5, 0.0],
+          "goal_yaw": 0.3217505543966422,
+          "position_tolerance_m": 0.25,
+          "yaw_tolerance_rad": 0.35,
+          "reason": "satisfy_nav_to_point_success"
+        }
+      ]
+    },
+    "oracle_plans": [
+      {
+        "plan_id": "oracle_0",
+        "required_interaction_ids": [],
+        "steps": [
+          {
+            "type": "navigate",
+            "goal_point": [3.5, 1.5, 0.0],
+            "goal_yaw": 0.3217505543966422,
+            "position_tolerance_m": 0.25,
+            "yaw_tolerance_rad": 0.35,
+            "reason": "satisfy_nav_to_point_success"
+          }
+        ]
+      }
+    ],
+    "generation_validation": {
+      "navigation_validation": {
+        "sampling_source": "example_robot_inflated_occupancy",
+        "goal_point": [3.5, 1.5, 0.0],
+        "inflated_map_clearance_m": 0.3,
+        "straight_line_distance_m": 3.2,
+        "initial_state_path_found": true,
+        "initial_state_path_length_m": 3.2,
+        "oracle_restored_path_found": true,
+        "oracle_restored_path_length_m": 3.2,
+        "gt_path_waypoints": [[0.5, 0.5], [2.0, 1.0], [3.5, 1.5]]
+      },
+      "interaction_validations": [],
+      "oracle_prefixes": [
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 0,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": false,
+          "task_success": false,
+          "opened_interaction_ids": [],
+          "target_visibility_fraction": null
+        },
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 1,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": true,
+          "task_success": true,
+          "opened_interaction_ids": [],
+          "target_visibility_fraction": null
+        }
+      ],
+      "success_evidence": {
+        "status": "passed",
+        "validation_mode": "path_feasibility_only",
+        "planar_distance_m": 0.0,
+        "distance_threshold_m": 0.25,
+        "distance_passed": true,
+        "expected_task_success": true
+      },
+      "minimal_plan_verified": null
+    },
+    "task_generation": {
+      "generator": "generate_point_goal_v3.py",
+      "generator_version": "point_goal_generator_v1",
+      "source_case_id": "channel_house19_mug1_no_interaction",
+      "source_episode_index": 0,
+      "sampling": {
+        "goal_xy": [3.5, 1.5],
+        "straight_line_distance_m": 3.2,
+        "open_path_length_m": 3.2,
+        "closed_path_length_m": 3.2,
+        "interaction_aware": false,
+        "candidate_index": 12,
+        "attempted_candidate_count": 4,
+        "failure_counts": {"below_min_distance": 3}
+      }
+    }
+  }
+}

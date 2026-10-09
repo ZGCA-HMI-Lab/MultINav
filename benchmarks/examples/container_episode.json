@@ -1,0 +1,241 @@
+{
+  "source": {
+    "benchmark": "molmospaces-bench-v2",
+    "episode_index": 41
+  },
+  "house_index": 5,
+  "scene_dataset": "procthor-10k",
+  "data_split": "val",
+  "seed": 41,
+  "robot": {
+    "robot_name": "rby1",
+    "init_qpos": {}
+  },
+  "img_resolution": [640, 480],
+  "cameras": [
+    {
+      "name": "head_camera"
+    }
+  ],
+  "scene_modifications": {
+    "added_objects": {},
+    "object_poses": {},
+    "removed_objects": [],
+    "articulation_states": [
+      {
+        "object_name": "refrigerator_5_0",
+        "joint_name": "refrigerator_5_0_joint0",
+        "joint_index": 0,
+        "position": 0.0,
+        "open_fraction": 0.0
+      }
+    ]
+  },
+  "task": {
+    "task_cls": "molmo_spaces.tasks.nav_task.NavToObjTask",
+    "task_type": "nav_to_obj",
+    "robot_base_pose": [-1.1, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+    "selection_mode": "specific_instance",
+    "pickup_obj_name": "apple_target_5_0",
+    "pickup_obj_candidates": ["apple_target_5_0"],
+    "succ_pos_threshold": 1.5
+  },
+  "task_relevant_objects": [
+    "refrigerator_5_0",
+    "apple_target_5_0"
+  ],
+  "language": {
+    "task_description": "Find the apple.",
+    "instruction_type": "object_goal",
+    "locale": "en",
+    "interaction_disclosure": "hidden",
+    "referral_expressions": {
+      "object_name": "apple"
+    },
+    "referral_expressions_priority": {}
+  },
+  "interactive_nav": {
+    "schema_version": "interactive_nav_v3",
+    "case_id": "container_house5_apple0",
+    "parent_benchmark_episode_index": 41,
+    "interaction_domains": ["container"],
+    "interaction_requirement": "required",
+    "target": {
+      "selection_mode": "specific_instance",
+      "category": "Apple",
+      "selected_instance": "apple_target_5_0",
+      "instruction_consistent_candidates": ["apple_target_5_0"],
+      "container_name": "refrigerator_5_0",
+      "container_category": "Fridge",
+      "grounding": {
+        "unique": null,
+        "matching_instance_count": null,
+        "description": "apple",
+        "attributes": {}
+      }
+    },
+    "success_criteria": {
+      "type": "nav_to_obj",
+      "target_selection": "specific_instance",
+      "distance": {
+        "metric": "planar_robot_base_to_object",
+        "threshold_m": 1.5,
+        "comparison": "strictly_less"
+      },
+      "visibility": {
+        "camera_name": "head_camera",
+        "metric": "visibility_fraction",
+        "threshold": 0.0,
+        "comparison": "strictly_greater"
+      },
+      "combination": "all"
+    },
+    "initial_state": {
+      "interaction_states": [
+        {
+          "interaction_id": "fridge_door_0",
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        }
+      ]
+    },
+    "interactions": [
+      {
+        "interaction_id": "fridge_door_0",
+        "type": "container_hinged_door",
+        "object_name": "refrigerator_5_0",
+        "object_category": "Fridge",
+        "joint_name": "refrigerator_5_0_joint0",
+        "joint_index": 0,
+        "effect_types": ["reveal_target_object"],
+        "prerequisites": [],
+        "initial_state": {
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        },
+        "target_state": {
+          "joint_fraction": 1.0,
+          "semantic_state": "open"
+        }
+      }
+    ],
+    "oracle_plan": {
+      "plan_id": "oracle_0",
+      "required_interaction_ids": ["fridge_door_0"],
+      "steps": [
+        {
+          "type": "navigate",
+          "interaction_id": "fridge_door_0",
+          "goal_point": [0.3, 3.8, 0.0],
+          "goal_yaw": -1.57,
+          "position_tolerance_m": 0.2,
+          "yaw_tolerance_rad": 0.25,
+          "reason": "approach_container_interaction"
+        },
+        {
+          "type": "open_joint",
+          "interaction_id": "fridge_door_0",
+          "object_name": "refrigerator_5_0",
+          "joint_name": "refrigerator_5_0_joint0",
+          "joint_index": 0,
+          "target_fraction": 1.0,
+          "control_mode": "force",
+          "reason": "reveal_target_object"
+        },
+        {
+          "type": "observe_target",
+          "object_name": "apple_target_5_0",
+          "camera_name": "head_camera",
+          "visibility_threshold": 0.0,
+          "reason": "verify_target_visible"
+        }
+      ]
+    },
+    "oracle_plans": [
+      {
+        "plan_id": "oracle_0",
+        "required_interaction_ids": ["fridge_door_0"],
+        "steps": [
+          {
+            "type": "navigate",
+            "interaction_id": "fridge_door_0",
+            "goal_point": [0.3, 3.8, 0.0],
+            "goal_yaw": -1.57,
+            "position_tolerance_m": 0.2,
+            "yaw_tolerance_rad": 0.25,
+            "reason": "approach_container_interaction"
+          },
+          {
+            "type": "open_joint",
+            "interaction_id": "fridge_door_0",
+            "object_name": "refrigerator_5_0",
+            "joint_name": "refrigerator_5_0_joint0",
+            "joint_index": 0,
+            "target_fraction": 1.0,
+            "control_mode": "force",
+            "reason": "reveal_target_object"
+          },
+          {
+            "type": "observe_target",
+            "object_name": "apple_target_5_0",
+            "camera_name": "head_camera",
+            "visibility_threshold": 0.0,
+            "reason": "verify_target_visible"
+          }
+        ]
+      }
+    ],
+    "generation_validation": {
+      "navigation_validation": {
+        "interaction_pose_path_found": true,
+        "interaction_pose_path_length_m": 4.2
+      },
+      "interaction_validations": [
+        {
+          "interaction_id": "fridge_door_0",
+          "collision_free": true,
+          "target_fraction_reached": true,
+          "initial_visible_pixels": 0,
+          "final_visible_pixels": 318
+        }
+      ],
+      "oracle_prefixes": [
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 0,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": false,
+          "target_visibility_fraction": 0.0,
+          "target_visible_pixels": 0,
+          "task_success": false,
+          "opened_interaction_ids": []
+        },
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 2,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": true,
+          "target_visibility_fraction": 0.00104,
+          "target_visible_pixels": 318,
+          "task_success": true,
+          "opened_interaction_ids": ["fridge_door_0"]
+        }
+      ],
+      "compartment_evidence": null,
+      "success_evidence": {
+        "status": "passed",
+        "validation_mode": "simulated_terminal_state",
+        "target_object_name": "apple_target_5_0",
+        "planar_distance_m": 0.91,
+        "distance_threshold_m": 1.5,
+        "camera_name": "head_camera",
+        "visibility_fraction": 0.00104,
+        "visible_pixels": 318,
+        "distance_passed": true,
+        "visibility_passed": true,
+        "expected_task_success": true
+      },
+      "minimal_plan_verified": true
+    }
+  }
+}

@@ -1,0 +1,435 @@
+{
+  "source": {
+    "benchmark": "molmospaces-bench-v2",
+    "episode_index": 77
+  },
+  "house_index": 29,
+  "scene_dataset": "procthor-10k",
+  "data_split": "val",
+  "seed": 77,
+  "robot": {
+    "robot_name": "rby1",
+    "init_qpos": {}
+  },
+  "img_resolution": [640, 480],
+  "cameras": [
+    {
+      "name": "head_camera"
+    }
+  ],
+  "scene_modifications": {
+    "added_objects": {},
+    "object_poses": {},
+    "removed_objects": [],
+    "articulation_states": [
+      {
+        "object_name": "door_29_0",
+        "joint_name": "door_29_0_joint0",
+        "joint_index": 0,
+        "position": 0.0,
+        "open_fraction": 0.0
+      },
+      {
+        "object_name": "refrigerator_29_0",
+        "joint_name": "refrigerator_29_0_joint3",
+        "joint_index": 3,
+        "position": 0.0,
+        "open_fraction": 0.0
+      },
+      {
+        "object_name": "refrigerator_29_0",
+        "joint_name": "refrigerator_29_0_joint1",
+        "joint_index": 1,
+        "position": 0.0,
+        "open_fraction": 0.0
+      }
+    ]
+  },
+  "task": {
+    "task_cls": "molmo_spaces.tasks.nav_task.NavToObjTask",
+    "task_type": "nav_to_obj",
+    "robot_base_pose": [-3.0, 0.6, 0.0, 1.0, 0.0, 0.0, 0.0],
+    "selection_mode": "specific_instance",
+    "pickup_obj_name": "pencil_target_29_0",
+    "pickup_obj_candidates": ["pencil_target_29_0"],
+    "succ_pos_threshold": 1.5
+  },
+  "task_relevant_objects": [
+    "door_29_0",
+    "refrigerator_29_0",
+    "pencil_target_29_0"
+  ],
+  "language": {
+    "task_description": "Find the pencil.",
+    "instruction_type": "object_goal",
+    "locale": "en",
+    "interaction_disclosure": "hidden",
+    "referral_expressions": {
+      "object_name": "pencil"
+    },
+    "referral_expressions_priority": {}
+  },
+  "interactive_nav": {
+    "schema_version": "interactive_nav_v3",
+    "case_id": "mixed_house29_pencil0",
+    "parent_benchmark_episode_index": 77,
+    "interaction_domains": ["channel", "container"],
+    "interaction_requirement": "required",
+    "target": {
+      "selection_mode": "specific_instance",
+      "category": "Pencil",
+      "selected_instance": "pencil_target_29_0",
+      "instruction_consistent_candidates": ["pencil_target_29_0"],
+      "container_name": "refrigerator_29_0",
+      "container_category": "Fridge",
+      "grounding": {
+        "unique": null,
+        "matching_instance_count": null,
+        "description": "pencil",
+        "attributes": {}
+      }
+    },
+    "success_criteria": {
+      "type": "nav_to_obj",
+      "target_selection": "specific_instance",
+      "distance": {
+        "metric": "planar_robot_base_to_object",
+        "threshold_m": 1.5,
+        "comparison": "strictly_less"
+      },
+      "visibility": {
+        "camera_name": "head_camera",
+        "metric": "visibility_fraction",
+        "threshold": 0.0,
+        "comparison": "strictly_greater"
+      },
+      "combination": "all"
+    },
+    "initial_state": {
+      "interaction_states": [
+        {
+          "interaction_id": "channel_door_0",
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        },
+        {
+          "interaction_id": "fridge_outer_door_0",
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        },
+        {
+          "interaction_id": "fridge_inner_drawer_0",
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        }
+      ]
+    },
+    "interactions": [
+      {
+        "interaction_id": "channel_door_0",
+        "type": "channel_hinged_door",
+        "object_name": "door_29_0",
+        "object_category": "Door",
+        "joint_name": "door_29_0_joint0",
+        "joint_index": 0,
+        "effect_types": ["restore_reachability", "enable_interaction"],
+        "prerequisites": [],
+        "initial_state": {
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        },
+        "target_state": {
+          "joint_fraction": 1.0,
+          "semantic_state": "open"
+        }
+      },
+      {
+        "interaction_id": "fridge_outer_door_0",
+        "type": "container_hinged_door",
+        "object_name": "refrigerator_29_0",
+        "object_category": "Fridge",
+        "joint_name": "refrigerator_29_0_joint3",
+        "joint_index": 3,
+        "effect_types": ["enable_interaction"],
+        "prerequisites": [
+          {
+            "interaction_id": "channel_door_0",
+            "type": "reachability"
+          }
+        ],
+        "initial_state": {
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        },
+        "target_state": {
+          "joint_fraction": 1.0,
+          "semantic_state": "open"
+        }
+      },
+      {
+        "interaction_id": "fridge_inner_drawer_0",
+        "type": "container_sliding_drawer",
+        "object_name": "refrigerator_29_0",
+        "object_category": "Fridge",
+        "joint_name": "refrigerator_29_0_joint1",
+        "joint_index": 1,
+        "effect_types": ["reveal_target_object"],
+        "prerequisites": [
+          {
+            "interaction_id": "fridge_outer_door_0",
+            "type": "mechanical"
+          }
+        ],
+        "initial_state": {
+          "joint_fraction": 0.0,
+          "semantic_state": "closed"
+        },
+        "target_state": {
+          "joint_fraction": 1.0,
+          "semantic_state": "open"
+        }
+      }
+    ],
+    "oracle_plan": {
+      "plan_id": "oracle_0",
+      "required_interaction_ids": [
+        "channel_door_0",
+        "fridge_outer_door_0",
+        "fridge_inner_drawer_0"
+      ],
+      "steps": [
+        {
+          "type": "navigate",
+          "interaction_id": "channel_door_0",
+          "goal_point": [-1.8, 0.7, 0.0],
+          "goal_yaw": 0.0,
+          "position_tolerance_m": 0.2,
+          "yaw_tolerance_rad": 0.25,
+          "reason": "approach_channel_interaction"
+        },
+        {
+          "type": "open_joint",
+          "interaction_id": "channel_door_0",
+          "object_name": "door_29_0",
+          "joint_name": "door_29_0_joint0",
+          "joint_index": 0,
+          "target_fraction": 1.0,
+          "control_mode": "force",
+          "reason": "restore_reachability"
+        },
+        {
+          "type": "navigate",
+          "interaction_id": "fridge_outer_door_0",
+          "goal_point": [1.4, 2.9, 0.0],
+          "goal_yaw": 1.57,
+          "position_tolerance_m": 0.2,
+          "yaw_tolerance_rad": 0.25,
+          "reason": "approach_container_interaction"
+        },
+        {
+          "type": "set_view",
+          "view_profile": "drawer_low_view",
+          "head_qpos": [0.0, 0.3],
+          "torso_qpos": [0.35],
+          "reason": "improve_target_visibility"
+        },
+        {
+          "type": "open_joint",
+          "interaction_id": "fridge_outer_door_0",
+          "object_name": "refrigerator_29_0",
+          "joint_name": "refrigerator_29_0_joint3",
+          "joint_index": 3,
+          "target_fraction": 1.0,
+          "control_mode": "force",
+          "reason": "prerequisite_for_interaction"
+        },
+        {
+          "type": "open_joint",
+          "interaction_id": "fridge_inner_drawer_0",
+          "object_name": "refrigerator_29_0",
+          "joint_name": "refrigerator_29_0_joint1",
+          "joint_index": 1,
+          "target_fraction": 1.0,
+          "control_mode": "force",
+          "reason": "reveal_target_object"
+        },
+        {
+          "type": "observe_target",
+          "object_name": "pencil_target_29_0",
+          "camera_name": "head_camera",
+          "visibility_threshold": 0.0,
+          "reason": "verify_target_visible"
+        }
+      ]
+    },
+    "oracle_plans": [
+      {
+        "plan_id": "oracle_0",
+        "required_interaction_ids": [
+          "channel_door_0",
+          "fridge_outer_door_0",
+          "fridge_inner_drawer_0"
+        ],
+        "steps": [
+          {
+            "type": "navigate",
+            "interaction_id": "channel_door_0",
+            "goal_point": [-1.8, 0.7, 0.0],
+            "goal_yaw": 0.0,
+            "position_tolerance_m": 0.2,
+            "yaw_tolerance_rad": 0.25,
+            "reason": "approach_channel_interaction"
+          },
+          {
+            "type": "open_joint",
+            "interaction_id": "channel_door_0",
+            "object_name": "door_29_0",
+            "joint_name": "door_29_0_joint0",
+            "joint_index": 0,
+            "target_fraction": 1.0,
+            "control_mode": "force",
+            "reason": "restore_reachability"
+          },
+          {
+            "type": "navigate",
+            "interaction_id": "fridge_outer_door_0",
+            "goal_point": [1.4, 2.9, 0.0],
+            "goal_yaw": 1.57,
+            "position_tolerance_m": 0.2,
+            "yaw_tolerance_rad": 0.25,
+            "reason": "approach_container_interaction"
+          },
+          {
+            "type": "set_view",
+            "view_profile": "drawer_low_view",
+            "head_qpos": [0.0, 0.3],
+            "torso_qpos": [0.35],
+            "reason": "improve_target_visibility"
+          },
+          {
+            "type": "open_joint",
+            "interaction_id": "fridge_outer_door_0",
+            "object_name": "refrigerator_29_0",
+            "joint_name": "refrigerator_29_0_joint3",
+            "joint_index": 3,
+            "target_fraction": 1.0,
+            "control_mode": "force",
+            "reason": "prerequisite_for_interaction"
+          },
+          {
+            "type": "open_joint",
+            "interaction_id": "fridge_inner_drawer_0",
+            "object_name": "refrigerator_29_0",
+            "joint_name": "refrigerator_29_0_joint1",
+            "joint_index": 1,
+            "target_fraction": 1.0,
+            "control_mode": "force",
+            "reason": "reveal_target_object"
+          },
+          {
+            "type": "observe_target",
+            "object_name": "pencil_target_29_0",
+            "camera_name": "head_camera",
+            "visibility_threshold": 0.0,
+            "reason": "verify_target_visible"
+          }
+        ]
+      }
+    ],
+    "generation_validation": {
+      "navigation_validation": {
+        "initial_container_path_found": false,
+        "post_channel_interaction_path_found": true,
+        "oracle_path_length_m": 7.4
+      },
+      "interaction_validations": [
+        {
+          "interaction_id": "channel_door_0",
+          "collision_free": true,
+          "target_fraction_reached": true
+        },
+        {
+          "interaction_id": "fridge_outer_door_0",
+          "collision_free": true,
+          "target_fraction_reached": true
+        },
+        {
+          "interaction_id": "fridge_inner_drawer_0",
+          "collision_free": true,
+          "target_fraction_reached": true,
+          "control_mode": "force"
+        }
+      ],
+      "oracle_prefixes": [
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 0,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": false,
+          "target_visibility_fraction": 0.0,
+          "target_visible_pixels": 0,
+          "task_success": false,
+          "opened_interaction_ids": []
+        },
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 2,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": false,
+          "target_visibility_fraction": 0.0,
+          "target_visible_pixels": 0,
+          "task_success": false,
+          "opened_interaction_ids": ["channel_door_0"]
+        },
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 5,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": true,
+          "target_visibility_fraction": 0.0,
+          "target_visible_pixels": 0,
+          "task_success": false,
+          "opened_interaction_ids": [
+            "channel_door_0",
+            "fridge_outer_door_0"
+          ]
+        },
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 6,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": true,
+          "target_visibility_fraction": 0.00008,
+          "target_visible_pixels": 24,
+          "task_success": true,
+          "opened_interaction_ids": [
+            "channel_door_0",
+            "fridge_outer_door_0",
+            "fridge_inner_drawer_0"
+          ]
+        }
+      ],
+      "compartment_evidence": {
+        "interaction_id": "fridge_inner_drawer_0",
+        "joint_displacement_m": 0.22,
+        "object_displacement_along_joint_axis_m": 0.15,
+        "motion_ratio": 0.68,
+        "joint_object_consistent_motion": true
+      },
+      "success_evidence": {
+        "status": "passed",
+        "validation_mode": "oracle_rollout",
+        "target_object_name": "pencil_target_29_0",
+        "planar_distance_m": 0.74,
+        "distance_threshold_m": 1.5,
+        "camera_name": "head_camera",
+        "visibility_fraction": 0.00008,
+        "visible_pixels": 24,
+        "distance_passed": true,
+        "visibility_passed": true,
+        "expected_task_success": true
+      },
+      "minimal_plan_verified": true
+    }
+  }
+}

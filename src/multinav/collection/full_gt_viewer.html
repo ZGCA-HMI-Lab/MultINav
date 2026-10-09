@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full GT · 三维轨迹回放</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101722;color:#e9eef5}
+*{box-sizing:border-box}body{margin:0;padding:24px}header{display:flex;gap:18px;align-items:center;flex-wrap:wrap}h1{font-size:22px;margin:0}small,figcaption{color:#9dadc0}
+select,button,input[type=number]{font:inherit;background:#233247;color:inherit;border:1px solid #4c6079;border-radius:6px;padding:8px;max-width:100%}button{cursor:pointer}input[type=number]{width:85px}
+main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:20px;margin-top:18px}canvas{width:100%;height:540px;touch-action:none;background:radial-gradient(ellipse at center,#1e2c40,#121c2b);border-radius:10px}
+figure{margin:0 0 16px}img{width:100%;aspect-ratio:16/9;background:#1e2c40;object-fit:contain}#topdown{aspect-ratio:1}figcaption{font-size:14px;margin:6px 0}
+.controls{display:flex;gap:10px;align-items:center;margin:14px 0;flex-wrap:wrap}.controls label{display:flex;align-items:center;gap:8px}#frame{flex:1;min-width:140px}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}.legend span:before{content:'●';margin-right:6px;color:var(--c)}
+#status{white-space:pre-wrap;font-family:monospace;line-height:1.7}#instruction{line-height:1.9;padding:16px;background:#192536;border-radius:8px}#failure{color:#ffb4a6}footer{margin-top:18px;color:#9dadc0;font-size:13px}
+@media(max-width:850px){main{grid-template-columns:1fr}canvas{height:420px}body{padding:14px}}
+</style></head><body>
+<header><h1>Full GT · 三维轨迹回放</h1><select id="episode" aria-label="选择样本"></select><small id="counts"></small></header>
+<main><section><canvas id="plot" aria-label="右手坐标系三维轨迹，可旋转和平移"></canvas>
+<div class="legend"><span style="--c:#61b4ff">底盘</span><span style="--c:#ffb566">把手 / 操作点</span><span style="--c:#b9a2ff">末端目标</span></div>
+<div class="controls"><button id="reset">斜上方</button><button id="top">俯视 XY</button><button id="front">正视 XZ</button><button id="side">侧视 YZ</button></div>
+<div class="controls"><label>仰角 <input id="elevation" type="range" min="-85" max="90" value="35" aria-label="相机仰角"></label><label>观察中心 Z <input id="center-z" type="number" step="0.25" value="0.5"></label><small id="camera-status"></small></div>
+<small>左键拖动旋转 · 右键 / Shift+拖动平移 · 滚轮缩放 · Z 输入可抬高观察中心</small>
+<div class="controls"><button id="play">播放</button><input id="frame" type="range" min="0" value="0" step="1" aria-label="轨迹帧"></div>
+<div id="status" aria-live="polite"></div><div id="failure"></div><p id="instruction"></p>
+<figure><img id="topdown" alt="终态场景俯视图与完整GT轨迹"><figcaption>俯视图 + 完整 GT 路径 · +X 向右 / +Y 向上 · 绿色起点 / 黄色终点（终态场景）</figcaption></figure>
+</section><aside><figure><img id="head" alt="当前帧第一视角"><figcaption>第一视角 · 与位姿同一仿真时刻</figcaption></figure><figure><img id="external" alt="当前帧后方斜上方视角"><figcaption>后方斜上方 · 跟随机器人朝向</figcaption></figure></aside></main>
+<footer>右手世界坐标：XY 地面，+Z 向上；yaw 从 +X 朝 +Y 为正。单位 m / rad。GT 运动学轨迹；末端目标不等于机械臂实际执行，没有物理解锁验证。</footer>
+<script id="data" type="application/json">__FULL_GT_DATA__</script>
+<script>
+const dataset=JSON.parse(document.getElementById('data').textContent),select=document.getElementById('episode'),slider=document.getElementById('frame'),canvas=document.getElementById('plot'),ctx=canvas.getContext('2d');
+let current=null,azimuth=-Math.PI*.75,elevation=35*Math.PI/180,zoom=1,center=[0,0,.5],scale=50,extent=5,playing=false,last=0,drag=null;
+dataset.episodes.forEach((e,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`样本 ${e.index} · House ${e.house} · ${e.passed?'数据检查通过':'失败'}`;select.append(o)});
+document.getElementById('counts').textContent=`${dataset.episodes.filter(e=>e.passed).length} / ${dataset.episodes.length} 数据检查通过 · ${dataset.hz} Hz`;
+function basis(){const ca=Math.cos(azimuth),sa=Math.sin(azimuth),ce=Math.cos(elevation),se=Math.sin(elevation);return {right:[-sa,ca,0],up:[-se*ca,-se*sa,ce],eye:[ce*ca,ce*sa,se]}}
+const dot3=(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0);
+function project(p){const d=p.map((v,i)=>v-center[i]),b=basis();return [canvas.clientWidth/2+dot3(d,b.right)*scale,canvas.clientHeight/2-dot3(d,b.up)*scale]}
+function line(points,color,width=2){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();points.forEach((p,i)=>{const q=project(p);if(!i)ctx.moveTo(...q);else ctx.lineTo(...q)});ctx.stroke()}
+function dot(p,color,r=5){ctx.fillStyle=color;ctx.beginPath();ctx.arc(...project(p),r,0,Math.PI*2);ctx.fill()}
+function label(p,text,color){ctx.fillStyle=color;ctx.fillText(text,...project(p))}
+function axes(p,rpy){const [a,b,c]=rpy,ca=Math.cos(a),sa=Math.sin(a),cb=Math.cos(b),sb=Math.sin(b),cc=Math.cos(c),sc=Math.sin(c);const R=[[cc*cb,cc*sb*sa-sc*ca,cc*sb*ca+sc*sa],[sc*cb,sc*sb*sa+cc*ca,sc*sb*ca-cc*sa],[-sb,cb*sa,cb*ca]];['#ed7979','#7fca9e','#7ab8f5'].forEach((color,j)=>line([p,p.map((v,i)=>v+.3*R[i][j])],color,3))}
+function draw(){const rect=canvas.getBoundingClientRect(),dpr=devicePixelRatio||1;canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;ctx.scale(dpr,dpr);ctx.font='13px system-ui';if(!current||!current.frames.length)return;
+ const points=current.frames.map(f=>[f.b[0],f.b[1],0]),xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);scale=Math.min(rect.width,rect.height)*.72/extent*zoom;
+ const minX=Math.floor(Math.min(...xs))-1,maxX=Math.ceil(Math.max(...xs))+1,minY=Math.floor(Math.min(...ys))-1,maxY=Math.ceil(Math.max(...ys))+1;
+ for(let x=minX;x<=maxX;x++){line([[x,minY,0],[x,maxY,0]],'#334459',1);if(x%2===0)label([x,minY,0],String(x),'#8192a8')}
+ for(let y=minY;y<=maxY;y++){line([[minX,y,0],[maxX,y,0]],'#334459',1);if(y%2===0)label([minX,y,0],String(y),'#8192a8')}
+ const origin=[minX,minY,0];[[1,0,0],[0,1,0],[0,0,1]].forEach((v,i)=>{const end=origin.map((p,k)=>p+v[k]);line([origin,end],['#ed7979','#7fca9e','#7ab8f5'][i],3);label(end,['+X','+Y','+Z'][i],'#fff')});
+ line(points,'#365773',2);const k=+slider.value;line(points.slice(0,k+1),'#61b4ff',3);
+ for(const key of ['o','e']){let segment=[],id=null;function flush(){if(segment.length)line(segment,key==='o'?'#ffb566':'#b9a2ff',2);segment=[]}current.frames.forEach(f=>{if(!f[key]||f.id!==id)flush();if(f[key])segment.push(f[key].slice(0,3));id=f.id});flush()}
+ dot(points[0],'#88ddb3');dot(points.at(-1),'#f3c879');const f=current.frames[k];dot(points[k],'#61b4ff',7);axes(points[k],[0,0,f.b[2]]);if(f.o)dot(f.o.slice(0,3),'#ffb566');if(f.e){dot(f.e.slice(0,3),'#b9a2ff');axes(f.e.slice(0,3),f.e.slice(3))}
+ ctx.fillStyle='#d2dce8';ctx.fillText('右手世界坐标 · XY 地面 / +Z 向上',16,24);
+ document.getElementById('status').textContent=`帧 ${k} / ${current.frames.length-1}　t=${f.t.toFixed(2)} s　${f.p}\n底盘 [x,y,yaw] = ${f.b.map(v=>v.toFixed(3)).join(', ')}${f.e?'\n末端目标 [x,y,z,r,p,y] = '+f.e.map(v=>v.toFixed(3)).join(', '):''}`;
+ document.getElementById('camera-status').textContent=`仰角 ${(elevation*180/Math.PI).toFixed(0)}° · 相机 Z≈${(center[2]+extent*1.5/zoom*Math.sin(elevation)).toFixed(1)} m`;
+ document.getElementById('elevation').value=elevation*180/Math.PI;document.getElementById('center-z').value=center[2].toFixed(2);
+ for(const name of ['head','external']){const im=document.getElementById(name),src=`${current.directory}/images/${name}/${String(k).padStart(6,'0')}.png`;if(im.getAttribute('src')!==src)im.src=src}
+}
+function reset(){azimuth=-Math.PI*.75;elevation=35*Math.PI/180;zoom=1;if(current?.frames.length){const p=current.frames.map(f=>f.b),xs=p.map(v=>v[0]),ys=p.map(v=>v[1]);center=[(Math.min(...xs)+Math.max(...xs))/2,(Math.min(...ys)+Math.max(...ys))/2,.5];extent=Math.max(3,Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys))}draw()}
+function choose(){playing=false;document.getElementById('play').textContent='播放';current=dataset.episodes[+select.value];slider.max=Math.max(0,current.frames.length-1);slider.value=0;document.getElementById('instruction').textContent=current.instruction;document.getElementById('failure').textContent=current.error||'';const top=document.getElementById('topdown');top.hidden=!current.topdown;if(current.topdown)top.src=current.topdown;if(!current.frames.length)for(const name of ['head','external'])document.getElementById(name).removeAttribute('src');reset()}
+select.onchange=choose;slider.oninput=draw;document.getElementById('reset').onclick=reset;
+document.getElementById('top').onclick=()=>{azimuth=-Math.PI/2;elevation=Math.PI/2;draw()};document.getElementById('front').onclick=()=>{azimuth=-Math.PI/2;elevation=0;draw()};document.getElementById('side').onclick=()=>{azimuth=0;elevation=0;draw()};
+document.getElementById('elevation').oninput=e=>{elevation=+e.target.value*Math.PI/180;draw()};document.getElementById('center-z').onchange=e=>{const value=+e.target.value;if(Number.isFinite(value))center[2]=value;draw()};
+document.getElementById('play').onclick=()=>{if(current?.frames.length){playing=!playing;document.getElementById('play').textContent=playing?'暂停':'播放'}};
+canvas.oncontextmenu=e=>e.preventDefault();canvas.onpointerdown=e=>{drag={x:e.clientX,y:e.clientY,pan:e.button===2||e.shiftKey};canvas.setPointerCapture(e.pointerId)};canvas.onpointerup=canvas.onpointercancel=()=>drag=null;
+canvas.onpointermove=e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(drag.pan){const b=basis();center=center.map((v,i)=>v-dx/scale*b.right[i]+dy/scale*b.up[i])}else{azimuth-=dx*.01;elevation=Math.max(-85*Math.PI/180,Math.min(Math.PI/2,elevation+dy*.01))}drag.x=e.clientX;drag.y=e.clientY;draw()};
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.15,Math.min(12,zoom*Math.exp(-e.deltaY*.001)));draw()},{passive:false});window.addEventListener('resize',draw);
+function animate(t){if(playing&&current?.frames.length&&t-last>=1000/dataset.hz){slider.value=(+slider.value+1)%current.frames.length;draw();last=t}requestAnimationFrame(animate)}
+window.fullGTView={project,basis,state:()=>({center:[...center],azimuth,elevation,zoom})};
+if(dataset.episodes.length)choose();requestAnimationFrame(animate);
+</script></body></html>

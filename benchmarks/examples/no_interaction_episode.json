@@ -1,0 +1,178 @@
+{
+  "source": {
+    "benchmark": "molmospaces-bench-v2",
+    "episode_index": 13
+  },
+  "house_index": 19,
+  "scene_dataset": "procthor-10k",
+  "data_split": "val",
+  "seed": 13,
+  "robot": {
+    "robot_name": "rby1",
+    "init_qpos": {}
+  },
+  "img_resolution": [640, 480],
+  "cameras": [
+    {
+      "name": "head_camera"
+    }
+  ],
+  "scene_modifications": {
+    "added_objects": {},
+    "object_poses": {},
+    "removed_objects": [],
+    "articulation_states": []
+  },
+  "task": {
+    "task_cls": "molmo_spaces.tasks.nav_task.NavToObjTask",
+    "task_type": "nav_to_obj",
+    "robot_base_pose": [1.2, -0.4, 0.0, 1.0, 0.0, 0.0, 0.0],
+    "selection_mode": "specific_instance",
+    "pickup_obj_name": "mug_target_19_1",
+    "pickup_obj_candidates": ["mug_target_19_1"],
+    "succ_pos_threshold": 1.5
+  },
+  "task_relevant_objects": ["mug_target_19_1"],
+  "language": {
+    "task_description": "Find the mug.",
+    "instruction_type": "object_goal",
+    "locale": "en",
+    "interaction_disclosure": "hidden",
+    "referral_expressions": {
+      "object_name": "mug"
+    },
+    "referral_expressions_priority": {}
+  },
+  "interactive_nav": {
+    "schema_version": "interactive_nav_v3",
+    "case_id": "channel_house19_mug1_no_interaction",
+    "parent_benchmark_episode_index": 13,
+    "interaction_domains": ["channel"],
+    "interaction_requirement": "unnecessary",
+    "target": {
+      "selection_mode": "specific_instance",
+      "category": "Mug",
+      "selected_instance": "mug_target_19_1",
+      "instruction_consistent_candidates": ["mug_target_19_1"],
+      "container_name": null,
+      "container_category": null,
+      "grounding": {
+        "unique": null,
+        "matching_instance_count": null,
+        "description": "mug",
+        "attributes": {}
+      }
+    },
+    "success_criteria": {
+      "type": "nav_to_obj",
+      "target_selection": "specific_instance",
+      "distance": {
+        "metric": "planar_robot_base_to_object",
+        "threshold_m": 1.5,
+        "comparison": "strictly_less"
+      },
+      "visibility": {
+        "camera_name": "head_camera",
+        "metric": "visibility_fraction",
+        "threshold": 0.0,
+        "comparison": "strictly_greater"
+      },
+      "combination": "all"
+    },
+    "initial_state": {
+      "interaction_states": [],
+      "task_success_without_interaction": true
+    },
+    "interactions": [],
+    "oracle_plan": {
+      "plan_id": "oracle_0",
+      "required_interaction_ids": [],
+      "steps": [
+        {
+          "type": "navigate",
+          "interaction_id": null,
+          "goal_point": [3.1, 0.8, 0.0],
+          "goal_yaw": 0.6,
+          "position_tolerance_m": 0.25,
+          "yaw_tolerance_rad": 0.35,
+          "reason": "satisfy_nav_to_obj_success"
+        },
+        {
+          "type": "observe_target",
+          "object_name": "mug_target_19_1",
+          "camera_name": "head_camera",
+          "visibility_threshold": 0.0,
+          "reason": "verify_target_visible"
+        }
+      ]
+    },
+    "oracle_plans": [
+      {
+        "plan_id": "oracle_0",
+        "required_interaction_ids": [],
+        "steps": [
+          {
+            "type": "navigate",
+            "interaction_id": null,
+            "goal_point": [3.1, 0.8, 0.0],
+            "goal_yaw": 0.6,
+            "position_tolerance_m": 0.25,
+            "yaw_tolerance_rad": 0.35,
+            "reason": "satisfy_nav_to_obj_success"
+          },
+          {
+            "type": "observe_target",
+            "object_name": "mug_target_19_1",
+            "camera_name": "head_camera",
+            "visibility_threshold": 0.0,
+            "reason": "verify_target_visible"
+          }
+        ]
+      }
+    ],
+    "generation_validation": {
+      "navigation_validation": {
+        "initial_target_path_found": true,
+        "oracle_path_length_m": 2.4
+      },
+      "interaction_validations": [],
+      "oracle_prefixes": [
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 0,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": false,
+          "target_visibility_fraction": 0.0,
+          "target_visible_pixels": 0,
+          "task_success": false,
+          "opened_interaction_ids": []
+        },
+        {
+          "plan_id": "oracle_0",
+          "completed_step_count": 2,
+          "robot_reachable_to_next_goal": true,
+          "target_distance_passed": true,
+          "target_visibility_fraction": 0.0022,
+          "target_visible_pixels": 676,
+          "task_success": true,
+          "opened_interaction_ids": []
+        }
+      ],
+      "compartment_evidence": null,
+      "success_evidence": {
+        "status": "passed",
+        "validation_mode": "simulated_terminal_state",
+        "target_object_name": "mug_target_19_1",
+        "planar_distance_m": 0.73,
+        "distance_threshold_m": 1.5,
+        "camera_name": "head_camera",
+        "visibility_fraction": 0.0022,
+        "visible_pixels": 676,
+        "distance_passed": true,
+        "visibility_passed": true,
+        "expected_task_success": true
+      },
+      "minimal_plan_verified": null
+    }
+  }
+}

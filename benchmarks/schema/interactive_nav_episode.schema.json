@@ -1,0 +1,814 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://molmospaces.local/schemas/interactive_nav_episode_v3.json",
+  "title": "MolmoSpaces Interactive Navigation Episode v3",
+  "type": "object",
+  "required": [
+    "house_index",
+    "scene_dataset",
+    "data_split",
+    "robot",
+    "cameras",
+    "scene_modifications",
+    "task",
+    "language",
+    "interactive_nav"
+  ],
+  "properties": {
+    "source": {
+      "type": ["object", "null"]
+    },
+    "house_index": {
+      "type": "integer"
+    },
+    "scene_dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "data_split": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": ["integer", "null"]
+    },
+    "robot": {
+      "type": "object"
+    },
+    "img_resolution": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 1},
+        {"type": "integer", "minimum": 1}
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "cameras": {
+      "type": "array",
+      "items": {"type": "object"}
+    },
+    "scene_modifications": {
+      "$ref": "#/$defs/sceneModifications"
+    },
+    "task": {
+      "oneOf": [
+        {"$ref": "#/$defs/navToObjTask"},
+        {"$ref": "#/$defs/navToPointTask"}
+      ]
+    },
+    "task_relevant_objects": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "language": {
+      "$ref": "#/$defs/language"
+    },
+    "interactive_nav": {
+      "$ref": "#/$defs/interactiveNav"
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "articulationState": {
+      "type": "object",
+      "required": ["object_name", "joint_name", "position"],
+      "properties": {
+        "object_name": {"type": "string", "minLength": 1},
+        "joint_name": {"type": "string", "minLength": 1},
+        "joint_index": {"type": ["integer", "null"]},
+        "position": {"type": "number"},
+        "open_fraction": {
+          "type": ["number", "null"],
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      },
+      "additionalProperties": false
+    },
+    "sceneModifications": {
+      "type": "object",
+      "required": [
+        "added_objects",
+        "object_poses",
+        "removed_objects",
+        "articulation_states"
+      ],
+      "properties": {
+        "added_objects": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        },
+        "object_poses": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {"type": "number"},
+            "minItems": 7,
+            "maxItems": 7
+          }
+        },
+        "removed_objects": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        },
+        "articulation_states": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/articulationState"}
+        }
+      },
+      "additionalProperties": true
+    },
+    "navToObjTask": {
+      "type": "object",
+      "required": [
+        "task_cls",
+        "task_type",
+        "robot_base_pose",
+        "selection_mode",
+        "pickup_obj_name",
+        "pickup_obj_candidates",
+        "succ_pos_threshold"
+      ],
+      "properties": {
+        "task_cls": {
+          "const": "molmo_spaces.tasks.nav_task.NavToObjTask"
+        },
+        "task_type": {
+          "const": "nav_to_obj"
+        },
+        "robot_base_pose": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 7,
+          "maxItems": 7
+        },
+        "selection_mode": {
+          "enum": ["specific_instance", "any_candidate"]
+        },
+        "pickup_obj_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pickup_obj_candidates": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "succ_pos_threshold": {
+          "type": "number",
+          "exclusiveMinimum": 0.0
+        }
+      },
+      "additionalProperties": true
+    },
+    "navToPointTask": {
+      "type": "object",
+      "required": [
+        "task_cls",
+        "task_type",
+        "robot_base_pose",
+        "goal_point",
+        "succ_pos_threshold",
+        "require_goal_yaw"
+      ],
+      "properties": {
+        "task_cls": {
+          "const": "molmo_spaces.tasks.point_nav_task.PointNavTask"
+        },
+        "task_type": {
+          "const": "nav_to_point"
+        },
+        "robot_base_pose": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 7,
+          "maxItems": 7
+        },
+        "goal_point": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "goal_yaw": {"type": ["number", "null"]},
+        "succ_pos_threshold": {
+          "type": "number",
+          "exclusiveMinimum": 0.0
+        },
+        "require_goal_yaw": {"type": "boolean"},
+        "succ_yaw_threshold": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0.0
+        }
+      },
+      "additionalProperties": true
+    },
+    "language": {
+      "type": "object",
+      "required": [
+        "task_description",
+        "instruction_type",
+        "locale",
+        "interaction_disclosure"
+      ],
+      "properties": {
+        "task_description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "instruction_type": {
+          "enum": [
+            "object_goal",
+            "point_goal",
+            "route_instruction",
+            "interaction_instruction",
+            "route_interaction_instruction"
+          ]
+        },
+        "locale": {
+          "type": "string",
+          "minLength": 2
+        },
+        "interaction_disclosure": {
+          "enum": ["hidden", "partial", "explicit"]
+        },
+        "referral_expressions": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        },
+        "referral_expressions_priority": {
+          "type": "object"
+        },
+        "task_input_mode": {
+          "enum": ["goal_spec", "instruction"]
+        },
+        "grounded_entity_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "grounded_plan_step_indices": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 0},
+          "uniqueItems": true
+        },
+        "generation_mode": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "targetGrounding": {
+      "type": "object",
+      "properties": {
+        "unique": {"type": ["boolean", "null"]},
+        "matching_instance_count": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "description": {"type": ["string", "null"]},
+        "attributes": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "objectTarget": {
+      "type": "object",
+      "required": [
+        "selection_mode",
+        "category",
+        "selected_instance",
+        "instruction_consistent_candidates",
+        "grounding"
+      ],
+      "properties": {
+        "selection_mode": {
+          "enum": ["specific_instance", "any_candidate"]
+        },
+        "category": {"type": "string", "minLength": 1},
+        "selected_instance": {"type": ["string", "null"]},
+        "instruction_consistent_candidates": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "container_name": {"type": ["string", "null"]},
+        "container_category": {"type": ["string", "null"]},
+        "grounding": {"$ref": "#/$defs/targetGrounding"}
+      },
+      "additionalProperties": true
+    },
+    "pointTarget": {
+      "type": "object",
+      "required": [
+        "target_type",
+        "goal_point",
+        "sampling_source",
+        "clearance_m",
+        "grounding"
+      ],
+      "properties": {
+        "target_type": {"const": "point"},
+        "goal_point": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "goal_yaw": {"type": ["number", "null"]},
+        "sampling_source": {"type": "string", "minLength": 1},
+        "clearance_m": {"type": "number", "minimum": 0.0},
+        "grounding": {"$ref": "#/$defs/targetGrounding"}
+      },
+      "additionalProperties": true
+    },
+    "target": {
+      "oneOf": [
+        {"$ref": "#/$defs/objectTarget"},
+        {"$ref": "#/$defs/pointTarget"}
+      ]
+    },
+    "distanceCriterion": {
+      "type": "object",
+      "required": ["metric", "threshold_m", "comparison"],
+      "properties": {
+        "metric": {"const": "planar_robot_base_to_object"},
+        "threshold_m": {"type": "number", "exclusiveMinimum": 0.0},
+        "comparison": {"const": "strictly_less"}
+      },
+      "additionalProperties": false
+    },
+    "visibilityCriterion": {
+      "type": "object",
+      "required": ["camera_name", "metric", "threshold", "comparison"],
+      "properties": {
+        "camera_name": {"const": "head_camera"},
+        "metric": {"const": "visibility_fraction"},
+        "threshold": {"const": 0.0},
+        "comparison": {"const": "strictly_greater"}
+      },
+      "additionalProperties": false
+    },
+    "navToObjSuccessCriteria": {
+      "type": "object",
+      "required": [
+        "type",
+        "target_selection",
+        "distance",
+        "visibility",
+        "combination"
+      ],
+      "properties": {
+        "type": {"const": "nav_to_obj"},
+        "target_selection": {
+          "enum": ["specific_instance", "any_candidate"]
+        },
+        "distance": {"$ref": "#/$defs/distanceCriterion"},
+        "visibility": {"$ref": "#/$defs/visibilityCriterion"},
+        "combination": {"const": "all"}
+      },
+      "additionalProperties": false
+    },
+    "pointDistanceCriterion": {
+      "type": "object",
+      "required": ["metric", "threshold_m", "comparison"],
+      "properties": {
+        "metric": {"const": "planar_robot_base_to_point"},
+        "threshold_m": {"type": "number", "exclusiveMinimum": 0.0},
+        "comparison": {"const": "less_or_equal"}
+      },
+      "additionalProperties": false
+    },
+    "navToPointSuccessCriteria": {
+      "type": "object",
+      "required": ["type", "distance", "require_goal_yaw"],
+      "properties": {
+        "type": {"const": "nav_to_point"},
+        "distance": {"$ref": "#/$defs/pointDistanceCriterion"},
+        "require_goal_yaw": {"type": "boolean"},
+        "yaw_threshold_rad": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0.0
+        }
+      },
+      "additionalProperties": false
+    },
+    "successCriteria": {
+      "oneOf": [
+        {"$ref": "#/$defs/navToObjSuccessCriteria"},
+        {"$ref": "#/$defs/navToPointSuccessCriteria"}
+      ]
+    },
+    "interactionState": {
+      "type": "object",
+      "required": ["joint_fraction", "semantic_state"],
+      "properties": {
+        "joint_fraction": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "semantic_state": {
+          "enum": ["closed", "open"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "interaction": {
+      "type": "object",
+      "required": [
+        "interaction_id",
+        "type",
+        "object_name",
+        "object_category",
+        "joint_name",
+        "joint_index",
+        "effect_types",
+        "prerequisites",
+        "initial_state",
+        "target_state"
+      ],
+      "properties": {
+        "interaction_id": {"type": "string", "minLength": 1},
+        "type": {
+          "enum": [
+            "channel_hinged_door",
+            "channel_sliding_door",
+            "container_hinged_door",
+            "container_sliding_drawer"
+          ]
+        },
+        "object_name": {"type": "string", "minLength": 1},
+        "object_category": {"type": "string", "minLength": 1},
+        "joint_name": {"type": "string", "minLength": 1},
+        "joint_index": {"type": "integer", "minimum": 0},
+        "effect_types": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "restore_reachability",
+              "reduce_navigation_cost",
+              "enable_interaction",
+              "reveal_target_object"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["interaction_id", "type"],
+            "properties": {
+              "interaction_id": {"type": "string", "minLength": 1},
+              "type": {
+                "enum": [
+                  "mechanical",
+                  "reachability",
+                  "visibility"
+                ]
+              }
+            },
+            "additionalProperties": false
+          },
+          "uniqueItems": true
+        },
+        "initial_state": {"$ref": "#/$defs/interactionState"},
+        "target_state": {"$ref": "#/$defs/interactionState"}
+      },
+      "additionalProperties": true
+    },
+    "oracleReason": {
+      "enum": [
+        "approach_channel_interaction",
+        "restore_reachability",
+        "reduce_navigation_cost",
+        "traverse_open_channel",
+        "approach_container_interaction",
+        "improve_target_visibility",
+        "prerequisite_for_interaction",
+        "reveal_target_object",
+        "satisfy_nav_to_obj_success",
+        "satisfy_nav_to_point_success",
+        "verify_target_visible"
+      ]
+    },
+    "navigateStep": {
+      "type": "object",
+      "required": [
+        "type",
+        "goal_point",
+        "goal_yaw",
+        "position_tolerance_m",
+        "yaw_tolerance_rad",
+        "reason"
+      ],
+      "properties": {
+        "type": {"const": "navigate"},
+        "interaction_id": {"type": ["string", "null"]},
+        "goal_point": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "goal_yaw": {"type": "number"},
+        "position_tolerance_m": {"type": "number", "minimum": 0.0},
+        "yaw_tolerance_rad": {"type": "number", "minimum": 0.0},
+        "reason": {"$ref": "#/$defs/oracleReason"}
+      },
+      "additionalProperties": false
+    },
+    "setViewStep": {
+      "type": "object",
+      "required": ["type", "view_profile", "reason"],
+      "properties": {
+        "type": {"const": "set_view"},
+        "view_profile": {"type": "string", "minLength": 1},
+        "head_qpos": {
+          "type": ["array", "null"],
+          "items": {"type": "number"}
+        },
+        "torso_qpos": {
+          "type": ["array", "null"],
+          "items": {"type": "number"}
+        },
+        "reason": {"const": "improve_target_visibility"}
+      },
+      "additionalProperties": false
+    },
+    "openJointStep": {
+      "type": "object",
+      "required": [
+        "type",
+        "interaction_id",
+        "object_name",
+        "joint_name",
+        "joint_index",
+        "target_fraction",
+        "control_mode",
+        "reason"
+      ],
+      "properties": {
+        "type": {"const": "open_joint"},
+        "interaction_id": {"type": "string", "minLength": 1},
+        "object_name": {"type": "string", "minLength": 1},
+        "joint_name": {"type": "string", "minLength": 1},
+        "joint_index": {"type": "integer", "minimum": 0},
+        "target_fraction": {
+          "type": "number",
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0
+        },
+        "control_mode": {"const": "force"},
+        "reason": {"$ref": "#/$defs/oracleReason"}
+      },
+      "additionalProperties": false
+    },
+    "observeTargetStep": {
+      "type": "object",
+      "required": [
+        "type",
+        "object_name",
+        "camera_name",
+        "visibility_threshold",
+        "reason"
+      ],
+      "properties": {
+        "type": {"const": "observe_target"},
+        "object_name": {"type": "string", "minLength": 1},
+        "camera_name": {"const": "head_camera"},
+        "visibility_threshold": {"const": 0.0},
+        "reason": {"const": "verify_target_visible"}
+      },
+      "additionalProperties": false
+    },
+    "oracleStep": {
+      "oneOf": [
+        {"$ref": "#/$defs/navigateStep"},
+        {"$ref": "#/$defs/setViewStep"},
+        {"$ref": "#/$defs/openJointStep"},
+        {"$ref": "#/$defs/observeTargetStep"}
+      ]
+    },
+    "oraclePlan": {
+      "type": "object",
+      "required": ["plan_id", "required_interaction_ids", "steps"],
+      "properties": {
+        "plan_id": {"type": "string", "minLength": 1},
+        "required_interaction_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "steps": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/oracleStep"},
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "oraclePrefix": {
+      "type": "object",
+      "required": [
+        "completed_step_count",
+        "robot_reachable_to_next_goal",
+        "target_distance_passed",
+        "target_visibility_fraction",
+        "task_success"
+      ],
+      "properties": {
+        "plan_id": {"type": ["string", "null"]},
+        "completed_step_count": {"type": "integer", "minimum": 0},
+        "robot_reachable_to_next_goal": {"type": ["boolean", "null"]},
+        "target_distance_passed": {"type": ["boolean", "null"]},
+        "target_visibility_fraction": {
+          "type": ["number", "null"],
+          "minimum": 0.0
+        },
+        "target_visible_pixels": {"type": ["integer", "null"], "minimum": 0},
+        "task_success": {"type": ["boolean", "null"]},
+        "opened_interaction_ids": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "successEvidence": {
+      "type": "object",
+      "required": ["status", "validation_mode"],
+      "properties": {
+        "status": {"enum": ["passed", "failed", "not_executed"]},
+        "validation_mode": {
+          "enum": [
+            "simulated_terminal_state",
+            "oracle_rollout",
+            "path_feasibility_only"
+          ]
+        },
+        "target_object_name": {"type": ["string", "null"]},
+        "planar_distance_m": {"type": ["number", "null"], "minimum": 0.0},
+        "distance_threshold_m": {
+          "type": ["number", "null"],
+          "exclusiveMinimum": 0.0
+        },
+        "camera_name": {"type": ["string", "null"]},
+        "visibility_fraction": {
+          "type": ["number", "null"],
+          "minimum": 0.0
+        },
+        "visible_pixels": {"type": ["integer", "null"], "minimum": 0},
+        "distance_passed": {"type": ["boolean", "null"]},
+        "visibility_passed": {"type": ["boolean", "null"]},
+        "expected_task_success": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "generationValidation": {
+      "type": "object",
+      "required": [
+        "navigation_validation",
+        "interaction_validations",
+        "oracle_prefixes",
+        "success_evidence",
+        "minimal_plan_verified"
+      ],
+      "properties": {
+        "navigation_validation": {"type": "object"},
+        "interaction_validations": {
+          "type": "array",
+          "items": {"type": "object"}
+        },
+        "oracle_prefixes": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/oraclePrefix"}
+        },
+        "compartment_evidence": {
+          "type": ["object", "null"]
+        },
+        "success_evidence": {"$ref": "#/$defs/successEvidence"},
+        "minimal_plan_verified": {"type": ["boolean", "null"]}
+      },
+      "additionalProperties": true
+    },
+    "initialState": {
+      "type": "object",
+      "required": ["interaction_states"],
+      "properties": {
+        "interaction_states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["interaction_id", "joint_fraction", "semantic_state"],
+            "properties": {
+              "interaction_id": {"type": "string", "minLength": 1},
+              "joint_fraction": {
+                "type": "number",
+                "minimum": 0.0,
+                "maximum": 1.0
+              },
+              "semantic_state": {"enum": ["closed", "open"]}
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "interactiveNav": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "case_id",
+        "parent_benchmark_episode_index",
+        "interaction_domains",
+        "interaction_requirement",
+        "target",
+        "success_criteria",
+        "initial_state",
+        "interactions",
+        "oracle_plan",
+        "oracle_plans",
+        "generation_validation"
+      ],
+      "properties": {
+        "schema_version": {"const": "interactive_nav_v3"},
+        "case_id": {"type": "string", "minLength": 1},
+        "parent_benchmark_episode_index": {"type": ["integer", "null"]},
+        "interaction_domains": {
+          "type": "array",
+          "items": {"enum": ["channel", "container"]},
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true
+        },
+        "interaction_requirement": {
+          "enum": ["required", "beneficial", "unnecessary", "unknown"]
+        },
+        "target": {"$ref": "#/$defs/target"},
+        "success_criteria": {"$ref": "#/$defs/successCriteria"},
+        "initial_state": {"$ref": "#/$defs/initialState"},
+        "interactions": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/interaction"},
+          "minItems": 0
+        },
+        "oracle_plan": {"$ref": "#/$defs/oraclePlan"},
+        "oracle_plans": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/oraclePlan"},
+          "minItems": 1
+        },
+        "generation_validation": {"$ref": "#/$defs/generationValidation"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "interaction_requirement": {"const": "beneficial"}
+            }
+          },
+          "then": {
+            "properties": {
+              "interactions": {"minItems": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "interaction_requirement": {"const": "required"}
+            }
+          },
+          "then": {
+            "properties": {
+              "interactions": {"minItems": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "interaction_requirement": {"const": "unnecessary"}
+            }
+          },
+          "then": {
+            "properties": {
+              "interactions": {"maxItems": 0}
+            }
+          }
+        }
+      ],
+      "additionalProperties": true
+    }
+  }
+}
