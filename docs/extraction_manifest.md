@@ -71,4 +71,5 @@ behind the seam; `docs/architecture.md` lists the modules that remain.
 | Item | Contents |
 |---|---|
 | `src/multinav/core/` | episode contract, articulation math, deferred simulator access |
-| `tests/` | platform seam, V3 schema, articulation convention, simulator-free imports |
+| `tests/` | platform seam, V3 schema, articulation convention, simulator-free imports, dataset card |
+| `benchmarks/dataset_card.md` | the card published with the Hugging Face release, kept next to the schema |

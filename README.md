@@ -23,7 +23,7 @@ standalone evaluator. The simulators themselves are external dependencies.
 | `src/multinav/sim/` | Simulator-side interaction runtime and V3 episode model |
 | `src/multinav/evaluation/` | Standalone benchmark runner, metrics and policies |
 | `src/multinav/collection/` | Ground-truth trajectory collection helpers |
-| `benchmarks/` | Episode schema and small examples |
+| `benchmarks/` | Episode schema, dataset card and small examples |
 | `docs/` | Architecture, extraction manifest, evaluation protocol |
 
 ## Install
@@ -50,11 +50,16 @@ An Isaac Sim adapter is planned; see `docs/architecture.md`.
 [`Piqiuni/MultINav-Bench`](https://huggingface.co/datasets/Piqiuni/MultINav-Bench)
 (3,000 episodes: 1,000 channel, 1,000 container, 1,000 mixed).
 
-Only the schema and small examples are tracked here; download the release from the Hub:
+Only the schema, the dataset card and small examples are tracked here; the
+episode archives live on the Hub:
 
 ```bash
 hf download Piqiuni/MultINav-Bench --repo-type dataset --local-dir benchmarks/data
 ```
+
+[`benchmarks/dataset_card.md`](benchmarks/dataset_card.md) is the card published
+with the release, including the episode format, the statistics and the metric
+definitions.
 
 ## Evaluate
 
