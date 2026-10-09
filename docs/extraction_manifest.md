@@ -59,9 +59,16 @@ the pin is a requirement, not a convenience.
 | Benchmark archives (`*.json.gz`, ~39 MB in the source branch) | hosted on Hugging Face instead (`Piqiuni/MultINav-Bench`) |
 | Machine paths (`/home/ldl/...`) in docs and scripts | local paths; not portable |
 
-## Still to clean
+## Local paths
 
-Files ported with local paths still present (tracked in `docs/architecture.md`):
+The ported files carry no machine paths: absolute paths in the source branch
+became package-relative imports during the port. Simulator packages are resolved
+through `multinav.core.simulator.lazy_module` where an import cannot yet move
+behind the seam; `docs/architecture.md` lists the modules that remain.
 
-- `docs/simulator_branch.md`, `docs/evaluation_protocol.md`, `src/multinav/sim/container_scene_probe.py`,
-  `src/multinav/evaluation/benchmark_runner.py`
+## Added after the port
+
+| Item | Contents |
+|---|---|
+| `src/multinav/core/` | episode contract, articulation math, deferred simulator access |
+| `tests/` | platform seam, V3 schema, articulation convention, simulator-free imports |

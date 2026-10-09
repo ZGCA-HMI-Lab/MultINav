@@ -17,6 +17,7 @@ standalone evaluator. The simulators themselves are external dependencies.
 
 | Path | Contents |
 |---|---|
+| `src/multinav/core/` | Episode contract, articulation math, deferred simulator access |
 | `src/multinav/platforms/` | Platform seam: the only interface a simulator must implement |
 | `src/multinav/platforms/molmospaces/` | MolmoSpaces adapter (MuJoCo) |
 | `src/multinav/sim/` | Simulator-side interaction runtime and V3 episode model |
@@ -27,7 +28,9 @@ standalone evaluator. The simulators themselves are external dependencies.
 
 ## Install
 
-Python 3.11 is required.
+Python 3.11 is required. The episode contract, articulation math and scoring
+core import with `pip install -e .`; a simulator is only needed to run an
+episode.
 
 ```bash
 pip install -e .
