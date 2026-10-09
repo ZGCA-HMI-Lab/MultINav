@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multinav"
+version = "0.1.0"
+description = "Interactive navigation environment and evaluation"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "ZGCA-HMI-Lab" }]
+dependencies = [
+    "numpy",
+    "scipy",
+    "opencv-python",
+    "h5py",
+    "pillow",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+# The MolmoSpaces simulator is an external dependency; this repository does not
+# vendor it. Pinned to the commit the interactive navigation layer was built
+# against: later upstream commits renamed or removed modules this adapter uses.
+molmospaces = [
+    "molmospaces @ git+https://github.com/allenai/molmospaces.git@1320b266d2b47aaa81c5f7a419cb9d3474e6994d",
+]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+multinav-eval = "multinav.evaluation.benchmark_runner:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+multinav = ["collection/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

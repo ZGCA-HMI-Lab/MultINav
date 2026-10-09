@@ -1,0 +1,12 @@
+MultINav
+Copyright 2026 ZGCA-HMI-Lab
+
+This product includes software developed as part of MolmoSpaces
+(https://github.com/allenai/molmospaces), Copyright 2026 Allen Institute for
+Artificial Intelligence, licensed under the Apache License, Version 2.0.
+
+The interactive navigation episode schema, benchmark evaluator, and simulator
+adapter in this repository are derived from the interactive navigation work
+published in the `molmospaces-interactive-nav` repository
+(https://github.com/piqiuni/molmospaces-interactive-nav, branch
+`interactive-nav/sim`).

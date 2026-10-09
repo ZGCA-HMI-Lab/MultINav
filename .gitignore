@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Run outputs
+outputs/
+output/
+runs/
+*.mp4
+
+# Benchmark data: the full release is hosted on Hugging Face
+# (https://huggingface.co/datasets/Piqiuni/MultINav-Bench). Only the schema and
+# the small examples in benchmarks/ are tracked.
+benchmarks/data/
+*.json.gz
+*.h5
+*.hdf5
+
+# Local environment
+.env
+*.env
+!*.env.example
