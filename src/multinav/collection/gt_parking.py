@@ -1,10 +1,13 @@
 """Conservative planar clearance against an articulation's sampled sweep."""
 import itertools
 
-import mujoco
 import numpy as np
 
+from multinav.core.simulator import lazy_module
+
 from .gt_operation import descendants
+
+mujoco = lazy_module("mujoco")
 
 
 def sweep_boxes(model, data, joint_id, target):

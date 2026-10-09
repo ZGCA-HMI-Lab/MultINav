@@ -8,7 +8,6 @@ import sys
 import time
 from typing import Any, Callable
 
-import mujoco
 import numpy as np
 
 # This module is imported both from package-qualified benchmark code and from
@@ -17,6 +16,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from multinav.core.simulator import lazy_module
 from multinav.sim.force_interaction_runtime import (
     ForceDriveConfig,
     HeadViewController,
@@ -33,6 +33,8 @@ from multinav.sim.force_interaction_runtime import (
     set_all_articulations_closed,
     set_all_door_roots_closed,
 )
+
+mujoco = lazy_module("mujoco")
 
 
 def drawer_sequence_task_step_budget(

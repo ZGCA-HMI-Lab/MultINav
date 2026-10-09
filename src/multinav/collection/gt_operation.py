@@ -3,10 +3,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-import mujoco
 import numpy as np
 
+from multinav.core.simulator import lazy_module
+
 from .gt_trajectory import pose_matrix
+
+mujoco = lazy_module("mujoco")
 
 
 def body_pose(data, body_id):

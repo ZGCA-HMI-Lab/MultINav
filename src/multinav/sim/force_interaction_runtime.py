@@ -4,10 +4,12 @@ from dataclasses import asdict, dataclass, replace
 import math
 from typing import Any, Callable, Mapping
 
-import mujoco
 import numpy as np
 
-from molmo_spaces.env.data_views import Door
+from multinav.core.simulator import lazy_module
+
+mujoco = lazy_module("mujoco")
+data_views = lazy_module("molmo_spaces.env.data_views")
 
 
 @dataclass(frozen=True)
@@ -157,7 +159,7 @@ def collect_door_root_groups(env) -> dict[str, dict[str, Any]]:
     groups: dict[int, dict[str, Any]] = {}
     for door_name in object_manager.find_door_names():
         try:
-            door = Door(door_name, data)
+            door = data_views.Door(door_name, data)
             hinge_index = int(door.get_hinge_joint_index())
             joint_name = str(door.joint_names[hinge_index])
             joint_range = [float(value) for value in door.get_joint_range(hinge_index)]

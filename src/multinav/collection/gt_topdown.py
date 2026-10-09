@@ -1,9 +1,12 @@
 """Render the final scene and project the recorded world-space GT route onto it."""
 import json
 
-import mujoco
 import numpy as np
 from PIL import Image, ImageDraw
+
+from multinav.core.simulator import lazy_module
+
+mujoco = lazy_module("mujoco")
 
 
 def project_world(points, eye, forward, up, near, half_height, size):
