@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>MultINav: Interactive Navigation Beyond Reachability</title>
+  <meta name="title" content="Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework">
+  <meta name="description" content="MultINav unifies channel-induced changes in spatial connectivity and container-induced changes in target visibility, together with their sequential dependencies, and introduces the MultINav-Bench benchmark and the MultINav-Agent framework.">
+  <meta name="keywords" content="MultINav, interactive navigation, ObjectGoal navigation, embodied AI, interaction graph, MultINav-Bench, MultINav-Agent, MolmoSpaces, channel interaction, container interaction, robot navigation">
+  <meta name="author" content="Delun Li, Xueyao Wei, Rui Chen, Yifei Wang, Junzhi Yu, Wenjie Song, Xingyu Chen">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://zgca-hmi-lab.github.io/MultINav/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="MultINav Project Page">
+  <meta property="og:url" content="https://zgca-hmi-lab.github.io/MultINav/">
+  <meta property="og:title" content="Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework">
+  <meta property="og:description" content="A 3,000-episode ObjectGoal benchmark for interaction-induced connectivity and visibility changes, and a three-stage agentic framework built on a persistent state-conditioned interaction graph.">
+  <meta property="og:image" content="https://zgca-hmi-lab.github.io/MultINav/static/images/overview.png">
+  <meta property="og:image:width" content="2348">
+  <meta property="og:image:height" content="528">
+  <meta property="og:image:alt" content="Overview of MultINav: channel and container interactions, benchmark, and agent framework">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework">
+  <meta name="twitter:description" content="MultINav-Bench and MultINav-Agent for interactive navigation beyond reachability.">
+  <meta name="twitter:image" content="https://zgca-hmi-lab.github.io/MultINav/static/images/overview.png">
+  <meta name="twitter:image:alt" content="Overview of MultINav">
+
+  <!-- Academic citation metadata -->
+  <meta name="citation_title" content="Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework">
+  <meta name="citation_author" content="Delun Li">
+  <meta name="citation_author" content="Xueyao Wei">
+  <meta name="citation_author" content="Rui Chen">
+  <meta name="citation_author" content="Yifei Wang">
+  <meta name="citation_author" content="Junzhi Yu">
+  <meta name="citation_author" content="Wenjie Song">
+  <meta name="citation_author" content="Xingyu Chen">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_pdf_url" content="https://zgca-hmi-lab.github.io/MultINav/static/pdfs/multinav.pdf">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f5f9e'/%3E%3Cpath d='M8 21V11l4 5 4-5v10' stroke='white' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='12' r='2.6' fill='%23e08a52'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="static/css/index.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span class="brand-text">
+        <strong>MultINav</strong>
+        <span>ZGCA HMI Lab</span>
+      </span>
+    </a>
+    <nav class="topnav" aria-label="Section navigation">
+      <a href="#abstract">Abstract</a>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#videos">Videos</a>
+      <a href="#bibtex">BibTeX</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===================== Hero ===================== -->
+  <section class="hero" id="top">
+    <div class="wrap wrap-narrow hero-inner">
+      <p class="eyebrow">Embodied AI &middot; Interactive Navigation</p>
+      <h1 class="paper-title">
+        Interactive Navigation Beyond Reachability:
+        <span class="title-sub">Benchmark and Agentic Framework</span>
+      </h1>
+
+      <p class="authors">
+        <span class="author">Delun Li<sup>1,2,*</sup></span>
+        <span class="author">Xueyao Wei<sup>1,2,*</sup></span>
+        <span class="author">Rui Chen<sup>3</sup></span>
+        <span class="author">Yifei Wang<sup>3</sup></span>
+        <span class="author">Junzhi Yu<sup>3</sup></span>
+        <span class="author">Wenjie Song<sup>1</sup></span>
+        <span class="author">Xingyu Chen<sup>2,&#9993;</sup></span>
+      </p>
+
+      <p class="affiliations">
+        <span><sup>1</sup>Beijing Institute of Technology</span>
+        <span><sup>2</sup>Zhongguancun Academy</span>
+        <span><sup>3</sup>Peking University</span>
+      </p>
+      <p class="affiliations note">
+        <span><sup>*</sup>Equal contribution</span>
+        <span><sup>&#9993;</sup>Corresponding author</span>
+      </p>
+
+      <div class="link-row">
+        <a class="btn btn-primary" href="static/pdfs/multinav.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+          Paper
+        </a>
+        <a class="btn" href="#bibtex">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h12M7 12h12M7 18h7"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          BibTeX
+        </a>
+        <a class="btn" href="https://github.com/ZGCA-HMI-Lab/MultINav" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4 1.5-5-2-7-2"/><path d="M15 5c3.5 1.5 4.5 5 4 8-1 6-6 9-11 9 2-1.5 2-4 1-5-1.5-2-2-4.5 0-7C10.5 7.5 12.5 6 15 5z"/></svg>
+          Code
+        </a>
+        <a class="btn" href="https://huggingface.co/datasets/Piqiuni/MultINav-Bench" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+          Dataset
+        </a>
+      </div>
+    </div>
+
+    <figure class="teaser wrap">
+      <a href="static/images/overview.png" target="_blank" rel="noopener">
+        <img src="static/images/overview.png" alt="Overview of MultINav: conventional interactive navigation, the MultINav benchmark, the MultINav agent, and joint navigation and decision making.">
+      </a>
+      <figcaption>
+        <strong>Figure 1 &middot; Overview of MultINav.</strong>
+        <em>Channel</em> interactions change spatial connectivity while <em>container</em> interactions change target
+        visibility; MultINav-Bench covers both effects and their sequential dependencies.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== Abstract ===================== -->
+  <section class="band" id="abstract">
+    <div class="wrap wrap-narrow">
+      <h2 class="section-title">Abstract</h2>
+      <div class="prose">
+        <p>
+          Existing embodied navigation tasks commonly assume that traversability and object states remain fixed during
+          an episode. Yet reaching a goal may require opening a door to access a room and then opening a container to
+          reveal a hidden target. We formulate <strong>interactive navigation beyond reachability</strong>, unifying
+          channel-induced changes in spatial connectivity, container-induced changes in target visibility, and their
+          sequential dependencies.
+        </p>
+        <p>
+          We introduce <strong>MultINav-Bench</strong>, a 3K-episode ObjectGoal benchmark in MolmoSpaces spanning
+          channel, container, and mixed tasks, with interaction-necessity annotations covering required and
+          unnecessary episodes. Its data generation pipeline automates task construction across multiple task types.
+          The evaluation protocol separately measures navigation success, interaction effectiveness, and cost.
+        </p>
+        <p>
+          We further propose <strong>MultINav-Agent</strong>, a three-stage agentic framework built on a persistent,
+          state-conditioned interaction graph. Semantic interactive perception grounds entities and interaction states;
+          a vision-language model selects task-relevant actions based on expected changes in connectivity and target
+          observability; and post-interaction verification updates the graph to guide subsequent navigation,
+          exploration, or interaction. Experiments on MultINav-Bench show that MultINav-Agent consistently outperforms
+          adapted baselines across channel, container, and mixed tasks.
+        </p>
+      </div>
+
+      <div class="highlights">
+        <article class="card">
+          <span class="card-index">01</span>
+          <h3>Interactive navigation beyond reachability</h3>
+          <p>
+            A formulation that unifies channel-induced connectivity changes, container-induced visibility changes,
+            and the sequential order in which they must be resolved.
+          </p>
+        </article>
+        <article class="card">
+          <span class="card-index">02</span>
+          <h3>MultINav-Bench</h3>
+          <p>
+            3,000 ObjectGoal episodes across 639 houses &mdash; 1,000 channel, 1,000 container, and 1,000 mixed &mdash;
+            with interaction-necessity labels and a five-metric protocol.
+          </p>
+        </article>
+        <article class="card">
+          <span class="card-index">03</span>
+          <h3>MultINav-Agent</h3>
+          <p>
+            A persistent, state-conditioned interaction graph that connects semantic perception, effect-guided action
+            selection, and post-interaction verification.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Benchmark ===================== -->
+  <section class="section" id="benchmark">
+    <div class="wrap">
+      <h2 class="section-title">MultINav-Bench</h2>
+      <p class="section-lead">
+        A diagnostic ObjectGoal benchmark for navigation under interaction-induced state changes. An episode may
+        require opening a passage door, exposing a target concealed inside a container, or composing both operations
+        in sequence before navigation can succeed.
+      </p>
+
+      <!-- Table 1 of the paper (referenced in the related-work discussion). -->
+      <h3 class="sub-title">Table 1 &middot; Comparison of interaction scope and evaluated state effects</h3>
+      <p class="table-note">
+        Chan., Cont., and Obj. denote channels, containers, and manipulable objects. Reported scale follows the
+        respective publications.
+      </p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Table 1: comparison of interaction scope and evaluated state effects">
+        <table class="table table-bench">
+          <thead>
+            <tr>
+              <th scope="col">Benchmark</th>
+              <th scope="col">Endpoint</th>
+              <th scope="col" class="c">Chan.</th>
+              <th scope="col" class="c">Cont.</th>
+              <th scope="col">Evaluated state effect</th>
+              <th scope="col">Reported scale / envs.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-group"><th colspan="6" scope="colgroup">Non-interactive benchmarks (fixed environment state)</th></tr>
+            <tr><th scope="row">Habitat ObjectNav</th><td>ObjectGoal</td><td class="c"></td><td class="c"></td><td>Static</td><td>2.8M eps. / 90 envs.</td></tr>
+            <tr><th scope="row">MolmoSpaces Navigate-to</th><td>ObjectGoal</td><td class="c"></td><td class="c"></td><td>Static</td><td>2K traj. / 679 envs.</td></tr>
+            <tr><th scope="row">R2R</th><td>InstructionGoal</td><td class="c"></td><td class="c"></td><td>Static</td><td>21.6K instr. / 90 envs.</td></tr>
+            <tr><th scope="row">VLN-CE</th><td>InstructionGoal</td><td class="c"></td><td class="c"></td><td>Static</td><td>R2R annot. / 90 envs.</td></tr>
+            <tr class="row-group"><th colspan="6" scope="colgroup">Interactive benchmarks (environment-changing actions)</th></tr>
+            <tr><th scope="row">Interactive Gibson</th><td>PointGoal</td><td class="c">&#10003;</td><td class="c"></td><td>Free space + disturbance</td><td>106 envs.</td></tr>
+            <tr><th scope="row">Interactive Visual Nav.</th><td>PointGoal</td><td class="c"></td><td class="c"></td><td>Free space</td><td>15K eps. / 120 envs.</td></tr>
+            <tr><th scope="row">CaMP</th><td>PointGoal</td><td class="c"></td><td class="c"></td><td>Free space</td><td>600K eps. / 12K envs.</td></tr>
+            <tr><th scope="row">InterNav</th><td>PointGoal</td><td class="c">&#10003;</td><td class="c"></td><td>Free space + connectivity</td><td>150 eval / 15 envs.</td></tr>
+            <tr><th scope="row">ALFRED</th><td>Household</td><td class="c"></td><td class="c">&#10003;</td><td>Object state</td><td>8K demos / 120 envs.</td></tr>
+            <tr><th scope="row">BEHAVIOR-1K</th><td>Activity</td><td class="c"></td><td class="c">&#10003;</td><td>Goal predicates</td><td>1K activities / 50 envs.</td></tr>
+            <tr class="ours">
+              <th scope="row">MultINav-Bench (ours)</th><td><strong>ObjectGoal</strong></td>
+              <td class="c">&#10003;</td><td class="c">&#10003;</td>
+              <td><strong>Connectivity + target exposure</strong></td><td><strong>3K eps. / 639 envs.</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat"><b>3,000</b><span>frozen episodes</span></div>
+        <div class="stat"><b>639</b><span>houses in MolmoSpaces</span></div>
+        <div class="stat"><b>1,000</b><span>episodes per split</span></div>
+        <div class="stat"><b>2,654 / 346</b><span>required / unnecessary</span></div>
+      </div>
+
+      <div class="taxonomy">
+        <article class="card card-channel">
+          <h3><span class="dot dot-channel" aria-hidden="true"></span>Channel interactions</h3>
+          <p>
+            Hinged doors govern spatial reachability, including critical closed doors (<code>required</code>),
+            distractor doors (<code>unnecessary</code>), and composite layouts.
+          </p>
+        </article>
+        <article class="card card-container">
+          <h3><span class="dot dot-container" aria-hidden="true"></span>Container interactions</h3>
+          <p>
+            Refrigerators, cabinets, and drawers expose occluded targets, enabling the visibility that terminal
+            ObjectGoal success requires.
+          </p>
+        </article>
+        <article class="card card-mixed">
+          <h3><span class="dot dot-mixed" aria-hidden="true"></span>Mixed episodes</h3>
+          <p>
+            Sequential composition is mandatory &mdash; for example, traversing a closed door to reach a closed
+            refrigerator that hides the goal.
+          </p>
+        </article>
+      </div>
+
+      <figure class="figure">
+        <a href="static/images/benchmark.png" target="_blank" rel="noopener">
+          <img src="static/images/benchmark.png" loading="lazy" alt="Construction and composition of MultINav-Bench: channel and container interaction effects, the four-stage data generation pipeline, required interaction counts, and oracle-conditioned path lengths.">
+        </a>
+        <figcaption>
+          <strong>Figure 2 &middot; Construction and composition of MultINav-Bench.</strong>
+          Top: channel interactions alter reachability and, in a route-shortening subset, route efficiency, whereas
+          container interactions change target visibility and accessibility. Bottom: benchmark construction and data
+          collection. Right: required-interaction counts and feasible-route lengths for the 3,000 episodes.
+        </figcaption>
+      </figure>
+
+      <div class="cols">
+        <div class="col">
+          <h3 class="sub-title">Task and state</h3>
+          <p>
+            The embodied state is <span class="math">s<sub>t</sub> = (x<sub>t</sub>, M<sub>t</sub>, z<sub>t</sub>)</span>,
+            combining the robot state, a geometric and semantic map, and the articulation states of interactive
+            entities. Actions combine navigation, which updates the robot state, with physical interaction, which
+            modifies traversability or target visibility.
+          </p>
+          <p>
+            Terminal ObjectGoal success requires stopping within the distance threshold <em>and</em> observing the
+            target in the head camera. Opening a door without locating the target yields no success, which keeps
+            interaction effects separate from the final navigation outcome.
+          </p>
+        </div>
+        <div class="col">
+          <h3 class="sub-title">Generation pipeline</h3>
+          <p>
+            Starting from ProcTHOR-10K houses and NavToObj seeds, candidates are synthesized through counterfactual
+            reachability and visibility checks: closing a channel must sever the shortest route to the goal, while
+            concealing a target inside a container must invalidate initial visibility until it is opened.
+          </p>
+          <p>
+            Candidates pass articulation readback, target-identity verification, and oracle rollout validation before
+            freezing 1,000 balanced episodes per domain. A full collection mode additionally records multimodal expert
+            demonstrations with synchronized visual streams, base trajectories, and end-effector targets.
+          </p>
+        </div>
+      </div>
+
+      <h3 class="sub-title mt-lg">Evaluation metrics (paper Section 3.3)</h3>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Evaluation metrics">
+        <table class="table table-metrics">
+          <thead>
+            <tr><th scope="col">Metric</th><th scope="col">Direction</th><th scope="col">What it measures</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">SR</th><td>higher</td>
+              <td>Terminal ObjectGoal success under standard distance and visibility thresholds.</td>
+            </tr>
+            <tr>
+              <th scope="row">SPL</th><td>higher</td>
+              <td>Success-weighted planar path efficiency relative to a feasible oracle route, reported on [0, 1].</td>
+            </tr>
+            <tr>
+              <th scope="row">ISR</th><td>higher</td>
+              <td>Mean fraction of verified necessary interaction effects on required episodes; valid plans receive partial credit.</td>
+            </tr>
+            <tr>
+              <th scope="row">IP</th><td>higher</td>
+              <td>Category-level interaction precision: the episode-mean fraction of attempts producing a verified physical effect in the target interaction class.</td>
+            </tr>
+            <tr>
+              <th scope="row">Total Cost</th><td>lower</td>
+              <td>All-episode mean of normalized operation cost, counting navigation, interactions, and attempts without a qualifying effect.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Method ===================== -->
+  <section class="band" id="method">
+    <div class="wrap">
+      <h2 class="section-title">MultINav-Agent</h2>
+      <p class="section-lead">
+        A persistent, state-conditioned interaction graph connects semantic perception, action selection, and
+        post-interaction verification. Verified changes update the graph that drives each subsequent navigation,
+        exploration, or interaction decision.
+      </p>
+
+      <figure class="figure figure-top">
+        <a href="static/images/method.png" target="_blank" rel="noopener">
+          <img src="static/images/method.png" loading="lazy" alt="MultINav-Agent framework: semantic interactive perception, action selection with candidate validation and semantic decision, and interaction verification with graph updates.">
+        </a>
+        <figcaption>
+          <strong>Figure 3 &middot; MultINav-Agent framework.</strong>
+          Perception builds a persistent, state-conditioned interaction graph; candidate plans are formed;
+          interaction proposals are filtered for reachability, observability, and freshness; a VLM scores admissible
+          plans by task relevance; and post-interaction verification updates the graph to guide subsequent action
+          selection.
+        </figcaption>
+      </figure>
+
+      <div class="stages">
+        <article class="card stage">
+          <span class="stage-num">Stage 1</span>
+          <h3>Semantic interactive perception</h3>
+          <p>
+            The graph <span class="math">G<sub>t</sub> = (V<sub>t</sub>, E<sub>t</sub>)</span> represents rooms,
+            interactive entities, objects, and the robot through connectivity, containment, and visibility relations.
+            Entities are associated across observations while visual attribute inference estimates interaction class
+            and coarse state: open, closed, or uncertain.
+          </p>
+        </article>
+        <article class="card stage">
+          <span class="stage-num">Stage 2</span>
+          <h3>Effect-guided action selection</h3>
+          <p>
+            Navigation, frontier exploration, and interaction candidates are generated from the graph and map.
+            Eligibility checks on route feasibility, visual evidence, and state reliability constrain the executable
+            set, and a vision-language model ranks candidates by their expected contribution to reaching or observing
+            the target.
+          </p>
+        </article>
+        <article class="card stage">
+          <span class="stage-num">Stage 3</span>
+          <h3>Verification and graph updates</h3>
+          <p>
+            Post-interaction verification reconciles fresh observations with execution feedback. Confident evidence
+            updates the affected entity state, while conflicting or occluded evidence is marked uncertain, and failed
+            attempts stay in the decision history to discourage immediate repetition.
+          </p>
+        </article>
+      </div>
+
+      <p class="callout">
+        <strong>Sequential dependencies.</strong> Opening a door enables entry into a room; observations there can
+        introduce a container candidate; a verified container opening exposes objects whose observations support the
+        next navigation decision. Each step updates the graph and the available actions.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== Results ===================== -->
+  <section class="section" id="results">
+    <div class="wrap">
+      <h2 class="section-title">Results</h2>
+      <p class="section-lead">
+        MultINav-Agent achieves better aggregate values on all five metrics than the MolmoSpaces adaptation of
+        MoMa-LLM, and remains competitive on non-interactive ObjectGoal navigation.
+      </p>
+
+      <h3 class="sub-title">Table 2 &middot; Non-interactive ObjectGoal (MolmoSpaces NavToObj)</h3>
+      <p class="table-note">
+        Terminal success rate over 2,000 tasks; leaderboard entries are marked in the paper.
+      </p>
+      <div class="table-narrow">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Table 2: non-interactive MolmoSpaces NavToObj results">
+          <table class="table table-results compact">
+            <thead>
+              <tr><th scope="col">Method</th><th scope="col">Tasks</th><th scope="col">SR (%) &uarr;</th><th scope="col">Domain</th></tr>
+            </thead>
+            <tbody>
+              <tr class="ours">
+                <th scope="row">MultINav-Agent (ours)</th><td>2,000</td><td><strong>53.0</strong></td><td>ProcTHOR</td>
+              </tr>
+              <tr><th scope="row">RING</th><td>2,000</td><td>48.0</td><td>ProcTHOR</td></tr>
+              <tr><th scope="row">DualVLN</th><td>2,000</td><td>21.0</td><td>Habitat</td></tr>
+              <tr><th scope="row">SPOC</th><td>2,000</td><td>20.15</td><td>ProcTHOR</td></tr>
+              <tr><th scope="row">VLFM</th><td>2,000</td><td>11.90</td><td>Habitat</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3 class="sub-title mt-lg">Table 3 &middot; Interactive navigation on MultINav-Bench</h3>
+      <p class="table-note">
+        Each method is evaluated on 3,000 episodes, 1,000 per split. Each method's first row reports the overall
+        result, followed by its task splits. Bold marks the best value for each metric within the same split.
+      </p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Table 3: interactive navigation results on MultINav-Bench">
+        <table class="table table-results">
+          <thead>
+            <tr>
+              <th rowspan="2" scope="col">Method / Split</th>
+              <th colspan="2" scope="colgroup" class="group-nav">Navigation &amp; Task</th>
+              <th colspan="2" scope="colgroup" class="group-int">Interaction</th>
+              <th rowspan="2" scope="col" class="group-cost">Overall</th>
+            </tr>
+            <tr>
+              <th scope="col" class="group-nav">SR (%) &uarr;</th>
+              <th scope="col">SPL &uarr;</th>
+              <th scope="col" class="group-int">ISR (%) &uarr;</th>
+              <th scope="col">IP (%) &uarr;</th>
+              <th scope="col">Cost &darr;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-head">
+              <th scope="row">MoMa-LLM</th>
+              <td>10.53</td><td>0.0848</td><td>23.69</td><td>27.59</td><td>0.9309</td>
+            </tr>
+            <tr class="row-sub">
+              <th scope="row">Channel</th>
+              <td>19.60</td><td>0.1758</td><td>54.28</td><td>40.61</td><td>0.8651</td>
+            </tr>
+            <tr class="row-sub">
+              <th scope="row">Container</th>
+              <td>10.30</td><td>0.0685</td><td>2.00</td><td>2.37</td><td>0.9324</td>
+            </tr>
+            <tr class="row-sub">
+              <th scope="row">Mixed</th>
+              <td>1.70</td><td>0.0101</td><td>25.37</td><td>39.81</td><td>0.9951</td>
+            </tr>
+            <tr class="row-head ours">
+              <th scope="row">MultINav-Agent (ours)</th>
+              <td><strong>41.63</strong></td><td><strong>0.2903</strong></td><td><strong>49.38</strong></td><td><strong>46.79</strong></td><td><strong>0.7743</strong></td>
+            </tr>
+            <tr class="row-sub ours">
+              <th scope="row">Channel</th>
+              <td>55.80</td><td>0.4567</td><td>60.09</td><td>54.29</td><td>0.6517</td>
+            </tr>
+            <tr class="row-sub ours">
+              <th scope="row">Container</th>
+              <td>45.00</td><td>0.3008</td><td>46.70</td><td>38.91</td><td>0.7220</td>
+            </tr>
+            <tr class="row-sub ours">
+              <th scope="row">Mixed</th>
+              <td>24.10</td><td>0.1135</td><td>45.07</td><td>47.16</td><td>0.9493</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        MultINav-Agent completes 1,249 of 3,000 episodes and improves SR by 31.10 points, SPL from 0.0848 to 0.2903,
+        and normalized cost from 0.9309 to 0.7743. Channel, container, and mixed SR gains are 36.20, 34.70, and 22.40
+        points respectively; mixed tasks remain the hardest for both methods.
+      </p>
+
+      <h3 class="sub-title mt-lg">Table 4 &middot; Ablation on a fixed 200-episode mixed subset</h3>
+      <p class="table-note">
+        All four variants use the same frozen subset of 165 houses. Bold marks the best value in each column.
+      </p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Table 4: ablation results">
+        <table class="table table-results">
+          <thead>
+            <tr>
+              <th rowspan="2" scope="col">Method</th>
+              <th colspan="2" scope="colgroup" class="group-nav">Navigation &amp; Task</th>
+              <th colspan="2" scope="colgroup" class="group-int">Interaction</th>
+              <th rowspan="2" scope="col" class="group-cost">Overall</th>
+            </tr>
+            <tr>
+              <th scope="col" class="group-nav">SR (%) &uarr;</th>
+              <th scope="col">SPL &uarr;</th>
+              <th scope="col" class="group-int">ISR (%) &uarr;</th>
+              <th scope="col">IP (%) &uarr;</th>
+              <th scope="col">Cost &darr;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-head ours">
+              <th scope="row">Full</th>
+              <td><strong>23.0</strong></td><td>0.107</td><td>41.8</td><td><strong>40.4</strong></td><td>0.961</td>
+            </tr>
+            <tr>
+              <th scope="row">Flat object memory</th>
+              <td>21.0</td><td>0.100</td><td><strong>43.8</strong></td><td>26.7</td><td>0.963</td>
+            </tr>
+            <tr>
+              <th scope="row">Greedy selection</th>
+              <td>22.0</td><td><strong>0.134</strong></td><td>40.9</td><td>36.9</td><td><strong>0.933</strong></td>
+            </tr>
+            <tr>
+              <th scope="row">Perception-only update</th>
+              <td>5.5</td><td>0.033</td><td>26.6</td><td>36.6</td><td>0.988</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">
+        Retaining execution-informed graph updates matters most: replacing verification with a perception-only update
+        drops SR from 23.0% to 5.5% on the ablation subset, while graph memory shows its clearest advantage in
+        interaction precision.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== Videos ===================== -->
+  <section class="band" id="videos">
+    <div class="wrap">
+      <h2 class="section-title">Qualitative Results</h2>
+      <p class="section-lead">
+        ObjectGoal rollouts from the supplementary material. Each clip follows the agent as it explores, interacts,
+        and verifies the resulting state change before continuing toward the goal.
+      </p>
+
+      <h3 class="sub-title">Simulated trials in MolmoSpaces</h3>
+      <p class="table-note">Channel and container effects, resolved as the agent searches for the target object.</p>
+      <figure class="figure figure-top">
+        <a href="static/images/case_study.png" target="_blank" rel="noopener">
+          <img src="static/images/case_study.png" loading="lazy" alt="Case study: the robot opens two doors to reach a refrigerator and opens it to reveal the target, with evolving semantic maps and interaction graphs.">
+        </a>
+        <figcaption>
+          <strong>Figure 4 &middot; Sequential interactions and graph updates.</strong>
+          The robot opens two doors to reach a refrigerator, then opens it to reveal the target. Insets show evolving
+          semantic maps and interaction graphs; the final panel shows the resulting graph and trajectory, where blue
+          marks navigation and exploration and orange marks interaction.
+        </figcaption>
+      </figure>
+      <div class="video-grid">
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/sim_apple.jpg">
+            <source src="static/videos/sim_apple.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: apple</strong>
+            <span>Door and container interactions in sequence.</span>
+          </figcaption>
+        </figure>
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/sim_mug.jpg">
+            <source src="static/videos/sim_mug.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: mug</strong>
+            <span>Container interaction exposes the target.</span>
+          </figcaption>
+        </figure>
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/sim_book.jpg">
+            <source src="static/videos/sim_book.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: book</strong>
+            <span>Exploration followed by a verified opening.</span>
+          </figcaption>
+        </figure>
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/sim_lettuce.jpg">
+            <source src="static/videos/sim_lettuce.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: lettuce</strong>
+            <span>Visibility change required for terminal success.</span>
+          </figcaption>
+        </figure>
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/sim_egg_1.jpg">
+            <source src="static/videos/sim_egg_1.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: egg (trial 1)</strong>
+            <span>Reachability and visibility changes combined.</span>
+          </figcaption>
+        </figure>
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/sim_egg_2.jpg">
+            <source src="static/videos/sim_egg_2.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: egg (trial 2)</strong>
+            <span>An alternative layout for the same goal class.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <h3 class="sub-title mt-lg">Real-world trials</h3>
+      <p class="table-note">
+        A Go2 quadruped in an indoor environment, with human-assisted door and refrigerator opening. Egocentric
+        observations, intermediate interaction graphs, and the semantic map record the evolving scene representation.
+      </p>
+      <figure class="figure figure-top">
+        <a href="static/images/real_world.png" target="_blank" rel="noopener">
+          <img src="static/images/real_world.png" loading="lazy" alt="Real-world navigation with a Go2 quadruped: starting, opening a door, exploring, navigating, and opening a refrigerator.">
+        </a>
+        <figcaption>
+          <strong>Figure 5 &middot; Real-world navigation.</strong>
+          The robot explores and navigates to a refrigerator, with human-assisted door and refrigerator opening.
+          Insets show observations and interaction graphs; map markers indicate navigation (blue) and interaction
+          (orange).
+        </figcaption>
+      </figure>
+      <div class="video-grid video-grid-2">
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/real_black_bag.jpg">
+            <source src="static/videos/real_black_bag.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: black bag</strong>
+            <span>Door traversal, exploration, and container inspection.</span>
+          </figcaption>
+        </figure>
+        <figure class="video-card">
+          <video controls muted loop playsinline preload="metadata" poster="static/images/posters/real_watermelon.jpg">
+            <source src="static/videos/real_watermelon.mp4" type="video/mp4">
+          </video>
+          <figcaption>
+            <strong>Object goal: watermelon</strong>
+            <span>Sequential interactions in an office and kitchen area.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== BibTeX ===================== -->
+  <section class="section" id="bibtex">
+    <div class="wrap wrap-narrow">
+      <div class="bibtex-head">
+        <h2 class="section-title left">BibTeX</h2>
+        <button class="btn btn-small" type="button" id="copy-bibtex">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span id="copy-bibtex-label">Copy</span>
+        </button>
+      </div>
+      <pre class="bibtex" id="bibtex-code"><code>@misc{multinav2026,
+  title  = {Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework},
+  author = {Li, Delun and Wei, Xueyao and Chen, Rui and Wang, Yifei and
+            Yu, Junzhi and Song, Wenjie and Chen, Xingyu},
+  year   = {2026},
+  note   = {Preprint}
+}</code></pre>
+      <p class="table-note left-note">
+        The arXiv identifier will be added once it is assigned; code and dataset links are available above.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap wrap-narrow">
+    <p>
+      This page follows the
+      <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener">Academic Project Page Template</a>,
+      itself adopted from <a href="https://nerfies.github.io" target="_blank" rel="noopener">Nerfies</a>.
+      Page content is licensed under
+      <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+    </p>
+  </div>
+</footer>
+
+<script src="static/js/index.js"></script>
+</body>
+</html>

@@ -30,3 +30,8 @@ benchmarks/data/
 .env
 *.env
 !*.env.example
+
+# Project page (site/) is published to GitHub Pages by
+# .github/workflows/pages.yml. The `*.mp4` rule above is meant for run
+# outputs, so re-include the page's qualitative clips explicitly.
+!site/static/videos/*.mp4
