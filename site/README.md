@@ -4,6 +4,10 @@ Static project page for *Interactive Navigation Beyond Reachability: Benchmark a
 The layout follows the lab's WEM project page (<https://zgca-hmi-lab.github.io/WEM/>), and the page is
 self-contained: no CDN, no build step, no external fonts.
 
+Published at <https://zgca-hmi-lab.github.io/MultINav/>. Deployment lives in this folder together with
+`.github/workflows/pages.yml`; the Pages source for `ZGCA-HMI-Lab/MultINav` is set to GitHub Actions,
+and the workflow publishes `site/` (minus `serve.py` and this README).
+
 ## Local preview
 
 ```powershell
@@ -59,6 +63,8 @@ supplementary media rather than as numbered floats.
 
 ## Known placeholders
 
-The hero "Code" and "Dataset" buttons are intentionally non-clickable until public URLs exist, and
-the BibTeX entry has no arXiv identifier yet. The footer keeps the Academic Project Page Template
-attribution required by the template license.
+Only the arXiv identifier is still missing: the hero "Code" button points at
+<https://github.com/ZGCA-HMI-Lab/MultINav>, "Dataset" points at
+<https://huggingface.co/datasets/Piqiuni/MultINav-Bench>, and the BibTeX entry is a plain `@misc`
+until the paper is announced. The footer keeps the Academic Project Page Template attribution
+required by the template license.
