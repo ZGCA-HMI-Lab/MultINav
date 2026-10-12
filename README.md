@@ -4,14 +4,44 @@
 
 MultINav benchmarks navigation in indoor scenes where articulated objects — doors,
 sliding doors and gate-like barriers, fridges, cabinets and drawers — change the
-structure of the navigable space. Each episode tells a policy *when* an interaction
-is worth performing, not only *how*, by attaching interactive objects, their state
-(`unknown` / `closed` / `open`), interaction cost and state transitions to the scene
-topology.
+structure of the navigable space.
+
+## Overview
+
+![Figure 1: conventional interactive navigation, the MultINav benchmark, the MultINav agent, and joint navigation and decision making](site/static/images/overview.png)
+
+*Existing interactive navigation focuses on reachability or route efficiency, overlooking
+interaction necessity and the ability to improve target observability. We propose the
+MultINav benchmark and agent to enable efficient and purposeful interactions in navigation.*
+
+**Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework** —
+[paper](https://zgca-hmi-lab.github.io/MultINav/) ·
+[code](https://github.com/ZGCA-HMI-Lab/MultINav) ·
+[dataset](https://huggingface.co/datasets/Piqiuni/MultINav-Bench)
+
+Opening a door restores a blocked route, but opening a fridge, a cabinet or a drawer changes
+what the robot can see and reach — and many of the interactions a scene affords are not worth
+performing at all. MultINav covers both sides of that decision:
+
+- **MultINav-Bench** — a 3,000-episode ObjectGoal benchmark that pairs *channel* interactions
+  (reachability) with *container* interactions (target visibility and accessibility), annotates
+  whether an interaction is necessary, and scores navigation success together with
+  interaction-process effectiveness.
+- **MultINav-Agent** — a three-stage framework over a state-conditioned semantic interaction
+  graph: semantic interactive perception grounds rooms, interaction states and expected effects;
+  a vision-language model selects the interaction-navigation action; execution outcomes verify
+  state transitions, update graph relations and trigger replanning.
+
+Both are evaluated against a non-interactive *Pure Navigation* baseline.
+
+## This repository
 
 This repository contains the **incremental** interactive navigation layer: the
 simulator-facing environment hooks, the `interactive_nav_v3` episode contract, and the
-standalone evaluator. The simulators themselves are external dependencies.
+standalone evaluator. The simulators themselves are external dependencies. Each episode
+tells a policy *when* an interaction is worth performing, not only *how*, by attaching
+interactive objects, their state (`unknown` / `closed` / `open`), interaction cost and
+state transitions to the scene topology.
 
 ## Layout
 
