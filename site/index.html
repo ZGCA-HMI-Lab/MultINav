@@ -419,25 +419,23 @@
 
       <h3 class="sub-title">Table 2 &middot; Non-interactive ObjectGoal (MolmoSpaces NavToObj)</h3>
       <p class="table-note">
-        Terminal success rate over 2,000 tasks; leaderboard entries are marked in the paper.
+        Terminal success rate over 2,000 tasks; &dagger; indicates leaderboard results.
       </p>
-      <div class="table-narrow">
-        <div class="table-scroll" tabindex="0" role="region" aria-label="Table 2: non-interactive MolmoSpaces NavToObj results">
-          <table class="table table-results compact">
-            <thead>
-              <tr><th scope="col">Method</th><th scope="col">Tasks</th><th scope="col">SR (%) &uarr;</th><th scope="col">Domain</th></tr>
-            </thead>
-            <tbody>
-              <tr class="ours">
-                <th scope="row">MultINav-Agent (ours)</th><td>2,000</td><td><strong>53.0</strong></td><td>ProcTHOR</td>
-              </tr>
-              <tr><th scope="row">RING</th><td>2,000</td><td>48.0</td><td>ProcTHOR</td></tr>
-              <tr><th scope="row">DualVLN</th><td>2,000</td><td>21.0</td><td>Habitat</td></tr>
-              <tr><th scope="row">SPOC</th><td>2,000</td><td>20.15</td><td>ProcTHOR</td></tr>
-              <tr><th scope="row">VLFM</th><td>2,000</td><td>11.90</td><td>Habitat</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Table 2: non-interactive MolmoSpaces NavToObj results">
+        <table class="table table-results table-compact">
+          <thead>
+            <tr><th scope="col">Method</th><th scope="col">Tasks</th><th scope="col">SR (%) &uarr;</th><th scope="col">Domain</th></tr>
+          </thead>
+          <tbody>
+            <tr class="ours">
+              <th scope="row">MultINav-Agent (ours)</th><td>2,000</td><td><strong>53.0</strong></td><td>ProcTHOR</td>
+            </tr>
+            <tr><th scope="row">RING<sup>&dagger;</sup></th><td>2,000</td><td>48.0</td><td>ProcTHOR</td></tr>
+            <tr><th scope="row">DualVLN<sup>&dagger;</sup></th><td>2,000</td><td>21.0</td><td>Habitat</td></tr>
+            <tr><th scope="row">SPOC</th><td>2,000</td><td>20.15</td><td>ProcTHOR</td></tr>
+            <tr><th scope="row">VLFM</th><td>2,000</td><td>11.90</td><td>Habitat</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <h3 class="sub-title mt-lg">Table 3 &middot; Interactive navigation on MultINav-Bench</h3>
@@ -451,49 +449,49 @@
             <tr>
               <th rowspan="2" scope="col">Method / Split</th>
               <th colspan="2" scope="colgroup" class="group-nav">Navigation &amp; Task</th>
-              <th colspan="2" scope="colgroup" class="group-int">Interaction</th>
-              <th rowspan="2" scope="col" class="group-cost">Overall</th>
+              <th colspan="2" scope="colgroup" class="group-int col-divider">Interaction</th>
+              <th scope="col" class="group-cost col-divider">Overall</th>
             </tr>
             <tr>
               <th scope="col" class="group-nav">SR (%) &uarr;</th>
-              <th scope="col">SPL &uarr;</th>
-              <th scope="col" class="group-int">ISR (%) &uarr;</th>
-              <th scope="col">IP (%) &uarr;</th>
-              <th scope="col">Cost &darr;</th>
+              <th scope="col" class="group-nav">SPL &uarr;</th>
+              <th scope="col" class="group-int col-divider">ISR (%) &uarr;</th>
+              <th scope="col" class="group-int">IP (%) &uarr;</th>
+              <th scope="col" class="group-cost col-divider">Cost &darr;</th>
             </tr>
           </thead>
           <tbody>
             <tr class="row-head">
               <th scope="row">MoMa-LLM</th>
-              <td>10.53</td><td>0.0848</td><td>23.69</td><td>27.59</td><td>0.9309</td>
+              <td>10.53</td><td>0.0848</td><td class="col-divider">23.69</td><td>27.59</td><td class="col-divider">0.9309</td>
             </tr>
             <tr class="row-sub">
               <th scope="row">Channel</th>
-              <td>19.60</td><td>0.1758</td><td>54.28</td><td>40.61</td><td>0.8651</td>
+              <td>19.60</td><td>0.1758</td><td class="col-divider">54.28</td><td>40.61</td><td class="col-divider">0.8651</td>
             </tr>
             <tr class="row-sub">
               <th scope="row">Container</th>
-              <td>10.30</td><td>0.0685</td><td>2.00</td><td>2.37</td><td>0.9324</td>
+              <td>10.30</td><td>0.0685</td><td class="col-divider">2.00</td><td>2.37</td><td class="col-divider">0.9324</td>
             </tr>
             <tr class="row-sub">
               <th scope="row">Mixed</th>
-              <td>1.70</td><td>0.0101</td><td>25.37</td><td>39.81</td><td>0.9951</td>
+              <td>1.70</td><td>0.0101</td><td class="col-divider">25.37</td><td>39.81</td><td class="col-divider">0.9951</td>
             </tr>
             <tr class="row-head ours">
               <th scope="row">MultINav-Agent (ours)</th>
-              <td><strong>41.63</strong></td><td><strong>0.2903</strong></td><td><strong>49.38</strong></td><td><strong>46.79</strong></td><td><strong>0.7743</strong></td>
+              <td><strong>41.63</strong></td><td><strong>0.2903</strong></td><td class="col-divider"><strong>49.38</strong></td><td><strong>46.79</strong></td><td class="col-divider"><strong>0.7743</strong></td>
             </tr>
             <tr class="row-sub ours">
               <th scope="row">Channel</th>
-              <td>55.80</td><td>0.4567</td><td>60.09</td><td>54.29</td><td>0.6517</td>
+              <td><strong>55.80</strong></td><td><strong>0.4567</strong></td><td class="col-divider"><strong>60.09</strong></td><td><strong>54.29</strong></td><td class="col-divider"><strong>0.6517</strong></td>
             </tr>
             <tr class="row-sub ours">
               <th scope="row">Container</th>
-              <td>45.00</td><td>0.3008</td><td>46.70</td><td>38.91</td><td>0.7220</td>
+              <td><strong>45.00</strong></td><td><strong>0.3008</strong></td><td class="col-divider"><strong>46.70</strong></td><td><strong>38.91</strong></td><td class="col-divider"><strong>0.7220</strong></td>
             </tr>
             <tr class="row-sub ours">
               <th scope="row">Mixed</th>
-              <td>24.10</td><td>0.1135</td><td>45.07</td><td>47.16</td><td>0.9493</td>
+              <td><strong>24.10</strong></td><td><strong>0.1135</strong></td><td class="col-divider"><strong>45.07</strong></td><td><strong>47.16</strong></td><td class="col-divider"><strong>0.9493</strong></td>
             </tr>
           </tbody>
         </table>
@@ -514,33 +512,33 @@
             <tr>
               <th rowspan="2" scope="col">Method</th>
               <th colspan="2" scope="colgroup" class="group-nav">Navigation &amp; Task</th>
-              <th colspan="2" scope="colgroup" class="group-int">Interaction</th>
-              <th rowspan="2" scope="col" class="group-cost">Overall</th>
+              <th colspan="2" scope="colgroup" class="group-int col-divider">Interaction</th>
+              <th scope="col" class="group-cost col-divider">Overall</th>
             </tr>
             <tr>
               <th scope="col" class="group-nav">SR (%) &uarr;</th>
-              <th scope="col">SPL &uarr;</th>
-              <th scope="col" class="group-int">ISR (%) &uarr;</th>
-              <th scope="col">IP (%) &uarr;</th>
-              <th scope="col">Cost &darr;</th>
+              <th scope="col" class="group-nav">SPL &uarr;</th>
+              <th scope="col" class="group-int col-divider">ISR (%) &uarr;</th>
+              <th scope="col" class="group-int">IP (%) &uarr;</th>
+              <th scope="col" class="group-cost col-divider">Cost &darr;</th>
             </tr>
           </thead>
           <tbody>
             <tr class="row-head ours">
               <th scope="row">Full</th>
-              <td><strong>23.0</strong></td><td>0.107</td><td>41.8</td><td><strong>40.4</strong></td><td>0.961</td>
+              <td><strong>23.0</strong></td><td>0.107</td><td class="col-divider">41.8</td><td><strong>40.4</strong></td><td class="col-divider">0.961</td>
             </tr>
             <tr>
               <th scope="row">Flat object memory</th>
-              <td>21.0</td><td>0.100</td><td><strong>43.8</strong></td><td>26.7</td><td>0.963</td>
+              <td>21.0</td><td>0.100</td><td class="col-divider"><strong>43.8</strong></td><td>26.7</td><td class="col-divider">0.963</td>
             </tr>
             <tr>
               <th scope="row">Greedy selection</th>
-              <td>22.0</td><td><strong>0.134</strong></td><td>40.9</td><td>36.9</td><td><strong>0.933</strong></td>
+              <td>22.0</td><td><strong>0.134</strong></td><td class="col-divider">40.9</td><td>36.9</td><td class="col-divider"><strong>0.933</strong></td>
             </tr>
             <tr>
               <th scope="row">Perception-only update</th>
-              <td>5.5</td><td>0.033</td><td>26.6</td><td>36.6</td><td>0.988</td>
+              <td>5.5</td><td>0.033</td><td class="col-divider">26.6</td><td>36.6</td><td class="col-divider">0.988</td>
             </tr>
           </tbody>
         </table>
