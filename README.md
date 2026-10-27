@@ -15,7 +15,8 @@ interaction necessity and the ability to improve target observability. We propos
 MultINav benchmark and agent to enable efficient and purposeful interactions in navigation.*
 
 **Interactive Navigation Beyond Reachability: Benchmark and Agentic Framework** —
-[paper](https://zgca-hmi-lab.github.io/MultINav/) ·
+[homepage](https://zgca-hmi-lab.github.io/MultINav/) ·
+[paper](https://arxiv.org/pdf/2610.17089) ·
 [code](https://github.com/ZGCA-HMI-Lab/MultINav) ·
 [dataset](https://huggingface.co/datasets/Piqiuni/MultINav-Bench)
 
