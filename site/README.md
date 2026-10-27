@@ -61,10 +61,10 @@ The five-metric definition table in the MultINav-Bench section and the qualitati
 extras; they are deliberately not numbered, because the paper presents that material as prose and as
 supplementary media rather than as numbered floats.
 
-## Known placeholders
+## Publication links
 
-Only the arXiv identifier is still missing: the hero "Code" button points at
-<https://github.com/ZGCA-HMI-Lab/MultINav>, "Dataset" points at
-<https://huggingface.co/datasets/Piqiuni/MultINav-Bench>, and the BibTeX entry is a plain `@misc`
-until the paper is announced. The footer keeps the Academic Project Page Template attribution
-required by the template license.
+The hero "Paper" button and citation PDF metadata point at
+<https://arxiv.org/pdf/2610.17089>. The BibTeX entry includes arXiv identifier `2610.17089`.
+"Code" points at <https://github.com/ZGCA-HMI-Lab/MultINav>, and "Dataset" points at
+<https://huggingface.co/datasets/Piqiuni/MultINav-Bench>. The footer keeps the Academic
+Project Page Template attribution required by the template license.
